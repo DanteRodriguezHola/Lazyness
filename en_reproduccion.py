@@ -14,8 +14,26 @@ class EnReproduccion:
         # === FRAME DE LOS METADATOS ===
 
         frame_metadatos = ttk.Frame(mainframe, width= 800, height = 450)
+        frame_metadatos["padding"] = 10
         frame_metadatos["relief"] = "sunken"
         frame_metadatos.grid(column = 1, row = 1)
+
+        caratula = PhotoImage(file = "no_cover.png")
+        label_caratula = ttk.Label(frame_metadatos, image = caratula)
+        label_caratula.grid(column = 1, row = 1)
+
+        titulo = StringVar(value = "<titulo de la cancion>")
+        label_titulo = ttk.Label(frame_metadatos, textvariable = titulo)
+        label_titulo["font"] = "TkHeadingFont:"
+        label_titulo.grid(column = 1, row = 2)
+
+        artista = StringVar(value = "<artista de la cancion>")
+        label_artista = ttk.Label(frame_metadatos, textvariable = artista)
+        label_artista.grid(column = 1, row = 3)
+
+        album = StringVar(value = "<titulo del album>")
+        label_album = ttk.Label(frame_metadatos, textvariable = album)
+        label_album.grid(column = 1, row = 4)
 
         # === FRAME DE LOS CONTROLES ===
 
