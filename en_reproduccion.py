@@ -1,18 +1,15 @@
 from tkinter import *
 from tkinter import ttk, filedialog, messagebox
+from tinytag import TinyTag
+
 import os
-
-def armar_ruta_archivo(carpeta, archivo):
-    ruta_archivo = os.path.join(carpeta, archivo)
-    return ruta_archivo
-
 def filtrar_archivos(carpeta):
     archivos = os.listdir(carpeta)
     archivos_filtrados = []
 
     for archivo in archivos:
         if archivo.endswith(".mp3") or archivo.endswith(".flac"):
-            ruta_archivo = armar_ruta_archivo(carpeta, archivo)
+            ruta_archivo = os.path.join(carpeta, archivo)
             archivos_filtrados.append(ruta_archivo)
 
     return archivos_filtrados
@@ -20,6 +17,15 @@ def filtrar_archivos(carpeta):
 def abrir_carpeta():
     carpeta = filedialog.askdirectory()
     archivos = filtrar_archivos(carpeta)
+
+    return archivos
+
+"""
+class Cola:
+    def __init__(self):
+        self.cola_base = []
+        self.cola_reproduccion = []
+"""
 
 class EnReproduccion:
     def __init__(self):
@@ -31,7 +37,12 @@ class EnReproduccion:
         mainframe = ttk.Frame(root, width = 800, height = 600)
         mainframe.grid(column = 1, row = 1)
 
+        carpeta = abrir_carpeta()
+        cancion = carpeta[0]
+
         # === FRAME DE LOS METADATOS ===
+
+        metadatos = TinyTag.get(cancion)
 
         frame_metadatos = ttk.Frame(mainframe, width= 800, height = 450)
         frame_metadatos["padding"] = 10
@@ -42,16 +53,16 @@ class EnReproduccion:
         label_caratula = ttk.Label(frame_metadatos, image = caratula)
         label_caratula.grid(column = 1, row = 1)
 
-        titulo = StringVar(value = "<titulo de la cancion>")
+        titulo = StringVar(value = metadatos.title)
         label_titulo = ttk.Label(frame_metadatos, textvariable = titulo)
         label_titulo["font"] = "TkHeadingFont:"
         label_titulo.grid(column = 1, row = 2)
 
-        artista = StringVar(value = "<artista de la cancion>")
+        artista = StringVar(value = metadatos.artist)
         label_artista = ttk.Label(frame_metadatos, textvariable = artista)
         label_artista.grid(column = 1, row = 3)
 
-        album = StringVar(value = "<titulo del album>")
+        album = StringVar(value = metadatos.album)
         label_album = ttk.Label(frame_metadatos, textvariable = album)
         label_album.grid(column = 1, row = 4)
 
@@ -63,5 +74,4 @@ class EnReproduccion:
 
         root.mainloop()
 
-abrir_carpeta()
 ahora = EnReproduccion()
