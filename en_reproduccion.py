@@ -3,20 +3,46 @@ from tkinter import ttk, filedialog, messagebox
 from tinytag import TinyTag
 
 import os
+
+
 def filtrar_archivos(carpeta):
     archivos = os.listdir(carpeta)
     archivos_filtrados = []
+    carpetas_encontradas = []
 
     for archivo in archivos:
-        if archivo.endswith(".mp3") or archivo.endswith(".flac"):
-            ruta_archivo = os.path.join(carpeta, archivo)
+        ruta_archivo = os.path.join(carpeta, archivo)
+
+        if os.path.isdir(ruta_archivo):
+            carpetas_encontradas.append(ruta_archivo)
+
+        elif archivo.endswith(".mp3") or archivo.endswith(".flac"):
             archivos_filtrados.append(ruta_archivo)
 
-    return archivos_filtrados
+    return carpetas_encontradas, archivos_filtrados
+
+def recorrer_carpetas(carpeta):
+    carpetas_restantes = [carpeta]
+    archivos_encontrados = []
+
+    while carpetas_restantes:
+        carpeta_actual = carpetas_restantes[0]
+        carpetas_encontradas, archivos_filtrados = filtrar_archivos(carpeta_actual)
+
+        if carpetas_encontradas:
+            carpetas_restantes.extend(carpetas_encontradas)
+        
+        archivos_encontrados.extend(archivos_filtrados)
+        carpetas_restantes.remove(carpeta_actual)
+
+    return archivos_encontrados
 
 def abrir_carpeta():
     carpeta = filedialog.askdirectory()
-    archivos = filtrar_archivos(carpeta)
+    archivos = recorrer_carpetas(carpeta)
+
+    for archivo in archivos:
+        print(archivo)
 
     return archivos
 
