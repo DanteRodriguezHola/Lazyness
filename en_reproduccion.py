@@ -57,22 +57,25 @@ class Trafico:
             return
         
         self.posicion_actual -= 1
-        print(self.posicion_actual)
+        os.system("cls")
+        print(f"Cancion actual: {os.path.basename(self.trafico_reproduccion[self.posicion_actual])}") 
 
-    def siguente_cancion(self):
-        if self.posicion_actual >= len(self.trafico_reproduccion):
+    def siguiente_cancion(self):
+        if self.posicion_actual >= len(self.trafico_reproduccion) - 1:
             return
         
         self.posicion_actual += 1
-        print(self.posicion_actual)
+        os.system("cls")
+        print(f"Cancion actual: {os.path.basename(self.trafico_reproduccion[self.posicion_actual])}")
 
-    def añadir_archivos(self):
+    def reproducir_cancion(self):
+        pass
+
+    def añadir_carpeta(self):
         nuevos_archivos = abrir_carpeta()
 
-        self.trafico_base.extend(nuevos_archivos)
         self.trafico_reproduccion.extend(nuevos_archivos)
-
-
+        
 class EnReproduccion:
     def __init__(self):
         root = Tk()
@@ -84,7 +87,7 @@ class EnReproduccion:
         mainframe.grid(column = 1, row = 1)
 
         trafico = Trafico()
-        trafico.añadir_archivos()
+        trafico.añadir_carpeta()
 
         # === FRAME DE LOS METADATOS ===
 
@@ -115,13 +118,15 @@ class EnReproduccion:
         self.label_album = ttk.Label(frame_metadatos, textvariable = album)
         self.label_album.grid(column = 1, row = 4)
 
+        # === FRAME DE LOS METADATOS ===
+
         # === FRAME DE LOS CONTROLES ===
 
         frame_controles = ttk.Frame(mainframe, width = 800, height = 250)
         frame_controles["padding"] = 5
         frame_controles["relief"] = "sunken"
         frame_controles.grid(column = 1, row = 2)
-
+        
             # === CREACIÓN DE LOS CONTROLES ===
 
         control_posicion = ttk.Scale(frame_controles, length = 750, from_= 0, to = 100)
@@ -134,7 +139,7 @@ class EnReproduccion:
         boton_retroceder = ttk.Button(frame_controles, text = "◀◀")
         boton_retroceder.grid(column = 2, row = 3)
 
-        estado = StringVar(value = "")
+        estado = StringVar(value = "I I")
         boton_estado = ttk.Button(frame_controles, textvariable = estado)
         boton_estado.grid(column = 3, row = 3)
 
@@ -145,7 +150,7 @@ class EnReproduccion:
         boton_retroceder.grid(column = 5, row = 3)
 
         boton_siguente = ttk.Button(frame_controles, text = "|▶")
-        boton_siguente["command"] = trafico.siguente_cancion
+        boton_siguente["command"] = trafico.siguiente_cancion
         boton_siguente.grid(column = 6, row = 3)
 
         control_volumen = ttk.Scale(frame_controles, length = 150, from_ = 0, to = 9)
@@ -163,9 +168,6 @@ class EnReproduccion:
 
         ruta_caratula = os.path.join(carpeta, nombre_caratula)
         return ruta_caratula
-    
-    def actualizar_metadatos(self):
-        self.label_titulo.set()
 
 
 ahora = EnReproduccion()
