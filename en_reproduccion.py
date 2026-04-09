@@ -49,7 +49,9 @@ class EnReproduccion:
         frame_metadatos["relief"] = "sunken"
         frame_metadatos.grid(column = 1, row = 1)
 
-        caratula = PhotoImage(file = "no_cover.png")
+        ruta_caratula = self.obtener_caratula(cancion)
+
+        caratula = PhotoImage(file = ruta_caratula)
         label_caratula = ttk.Label(frame_metadatos, image = caratula)
         label_caratula.grid(column = 1, row = 1)
 
@@ -73,5 +75,13 @@ class EnReproduccion:
         frame_controles.grid(column = 1, row = 2)
 
         root.mainloop()
+
+    def obtener_caratula(self, cancion):
+        carpeta = os.path.dirname(cancion)
+        nombre_caratula = "cover.png"
+
+        ruta_caratula = os.path.join(carpeta, nombre_caratula)
+        return ruta_caratula
+
 
 ahora = EnReproduccion()
