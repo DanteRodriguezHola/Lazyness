@@ -1,5 +1,25 @@
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, filedialog, messagebox
+import os
+
+def armar_ruta_archivo(carpeta, archivo):
+    ruta_archivo = os.path.join(carpeta, archivo)
+    return ruta_archivo
+
+def filtrar_archivos(carpeta):
+    archivos = os.listdir(carpeta)
+    archivos_filtrados = []
+
+    for archivo in archivos:
+        if archivo.endswith(".mp3") or archivo.endswith(".flac"):
+            ruta_archivo = armar_ruta_archivo(carpeta, archivo)
+            archivos_filtrados.append(ruta_archivo)
+
+    return archivos_filtrados
+
+def abrir_carpeta():
+    carpeta = filedialog.askdirectory()
+    archivos = filtrar_archivos(carpeta)
 
 class EnReproduccion:
     def __init__(self):
@@ -43,4 +63,5 @@ class EnReproduccion:
 
         root.mainloop()
 
+abrir_carpeta()
 ahora = EnReproduccion()
