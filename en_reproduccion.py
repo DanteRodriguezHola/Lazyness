@@ -46,12 +46,32 @@ def abrir_carpeta():
 
     return archivos
 
-"""
-class Cola:
+class Trafico:
     def __init__(self):
-        self.cola_base = []
-        self.cola_reproduccion = []
-"""
+        self.trafico_base = []
+        self.trafico_reproduccion = []
+        self.posicion_actual = 0
+
+    def anterior_cancion(self):
+        if self.posicion_actual <= 0:
+            return
+        
+        self.posicion_actual -= 1
+        print(self.posicion_actual)
+
+    def siguente_cancion(self):
+        if self.posicion_actual >= len(self.trafico_reproduccion):
+            return
+        
+        self.posicion_actual += 1
+        print(self.posicion_actual)
+
+    def añadir_archivos(self):
+        nuevos_archivos = abrir_carpeta()
+
+        self.trafico_base.extend(nuevos_archivos)
+        self.trafico_reproduccion.extend(nuevos_archivos)
+
 
 class EnReproduccion:
     def __init__(self):
@@ -63,11 +83,12 @@ class EnReproduccion:
         mainframe = ttk.Frame(root, width = 800, height = 600)
         mainframe.grid(column = 1, row = 1)
 
-        carpeta = abrir_carpeta()
-        cancion = carpeta[0]
+        trafico = Trafico()
+        trafico.añadir_archivos()
 
         # === FRAME DE LOS METADATOS ===
 
+        cancion = trafico.trafico_reproduccion[trafico.posicion_actual]
         metadatos = TinyTag.get(cancion)
 
         frame_metadatos = ttk.Frame(mainframe, width= 800, height = 450)
@@ -100,6 +121,16 @@ class EnReproduccion:
         frame_controles["relief"] = "sunken"
         frame_controles.grid(column = 1, row = 2)
 
+        boton_anterior = ttk.Button(frame_controles, text = "<I")
+        boton_anterior["command"] = trafico.anterior_cancion
+        boton_anterior.grid(column = 1, row = 3)
+
+        boton_siguente = ttk.Button(frame_controles, text = "I>")
+        boton_siguente["command"] = trafico.siguente_cancion
+        boton_siguente.grid(column = 2, row = 3)
+
+
+
         root.mainloop()
 
     def obtener_caratula(self, cancion):
@@ -108,6 +139,9 @@ class EnReproduccion:
 
         ruta_caratula = os.path.join(carpeta, nombre_caratula)
         return ruta_caratula
+    
+    def actualizar_metadatos(self):
+        pass
 
 
 ahora = EnReproduccion()
