@@ -1,54 +1,49 @@
 from tkinter import filedialog, messagebox
 from os import path, listdir
 
-def escanear_elementos(carpeta):
+def es_audio(elemento):
+    if elemento.endswith(".mp3"):
+        return True
+
+    if elemento.endswith(".flac"):
+        return True
+
+    return False   
+
+def examinar_elementos(carpeta):
     elementos_encontrados = listdir(carpeta)
-    archivos_filtrados = []
+
+    canciones_encontradas = []
     subcarpetas_encontradas = []
 
     for elemento in elementos_encontrados:
-        ruta_archivo = path.join(carpeta, elemento)
+        ruta_elemento = path.join(carpeta, elemento)
 
-        if path.isdir(ruta_archivo):
-            subcarpetas_encontradas.append(ruta_archivo)
+        if path.isdir(ruta_elemento):
+            subcarpetas_encontradas.append(ruta_elemento)
 
-        elif ruta_archivo.endswith(".flac") or ruta_archivo.endswith(".mp3"):
-            archivos_filtrados.append(ruta_archivo)
+        elif es_audio(ruta_elemento):
+            canciones_encontradas.append(ruta_elemento)
 
-    return subcarpetas_encontradas, archivos_filtrados
+    return canciones_encontradas, subcarpetas_encontradas
 
-def escanear_carpeta(carpeta, accion):
-    ESCANEAR_SUBCARPETAS = True
+def examinar_carpetas(carpeta_padre):
+    carpetas_restantes = [carpeta_padre]
+    canciones_total = []
 
-    carpetas_encontradas = [carpeta]
-    archivos_escaneados = []
+    while carpetas_restantes:
+        carpeta_actual = carpetas_restantes[0]
+        canciones, subcarpetas = examinar_elementos(carpeta_actual)
 
-    while carpetas_encontradas:
-        carpeta_actual = carpetas_encontradas[0]
-        subcarpetas, archivos = escanear_elementos(carpeta_actual)
+        canciones_total.extend(canciones)
+        carpetas_restantes.extend(subcarpetas)
 
-        if accion == ESCANEAR_SUBCARPETAS and subcarpetas:
-            carpetas_encontradas.extend(subcarpetas)
+        carpetas_restantes.remove(carpeta_actual)
 
-        archivos_escaneados.extend(archivos)
-        carpetas_encontradas.remove(carpeta_actual)
-
-    return archivos_escaneados
-
+    return canciones
+        
 def abrir_carpeta():
-    TITULO = "¿Escanear subcarpetas?"
-    MENSAJE = "¿Quiere tambien escanear las subcarpetas?"
-    CANCELAR = None
+    carpeta = filedialog.askdirectory()
+    canciones = examinar_carpetas(carpeta)
 
-    carpeta_abierta = filedialog.askdirectory()
-    if not carpeta_abierta:
-        return
-    
-    accion = messagebox.askyesno(title = TITULO, message = MENSAJE)
-    if accion == CANCELAR:
-        return
-    
-    nuevas_canciones = escanear_carpeta(carpeta_abierta, accion)
-    return nuevas_canciones
-
-abrir_carpeta()
+    return canciones

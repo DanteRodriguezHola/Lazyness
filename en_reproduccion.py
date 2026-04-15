@@ -2,12 +2,17 @@ from tkinter import *
 from tkinter import ttk, filedialog, messagebox
 from tinytag import TinyTag
 
+from abrir_carpeta import abrir_carpeta
+
 root = Tk()
 root.title("Lazyness")
 root.geometry("800x600")
 root.resizable(False, False)
 
+root.option_add('*tearOff', FALSE)
+
 mainframe = ttk.Frame(root, width = 800, height = 600)
+mainframe["padding"] = 10
 mainframe.grid(column = 1, row = 1)
 
 # === FRAME DE LA CARÁTULA ===
@@ -18,8 +23,7 @@ metadatos = TinyTag.get(cancion)
 frame_caratula = ttk.Frame(mainframe, width = 500, height = 600)
 frame_caratula.grid(column = 1, row = 1, rowspan = 2)
 
-
-ruta_caratula = "C:/Users/Public/Music/2026.01.15 - Eyeball/cover.png"
+ruta_caratula = "no_cover.png"
 
 caratula = PhotoImage(file = ruta_caratula)
 label_caratula = ttk.Label(frame_caratula, image = caratula)
@@ -34,16 +38,16 @@ frame_detalles["padding"] = 10
 frame_detalles["relief"] = "sunken"
 frame_detalles.grid(column = 2, row = 1)
 
-titulo = StringVar(value = metadatos.title)
+titulo = StringVar(value = "Titulo desconocido")
 label_titulo = ttk.Label(frame_detalles, textvariable = titulo)
 label_titulo["font"] = "TkHeadingFont:"
 label_titulo.grid(column = 1, row = 2)
 
-artista = StringVar(value = metadatos.artist)
+artista = StringVar(value = "Artista desconocido")
 label_artista = ttk.Label(frame_detalles, textvariable = artista)
 label_artista.grid(column = 1, row = 3)
 
-album = StringVar(value = metadatos.album)
+album = StringVar(value = "Album desconocido")
 label_album = ttk.Label(frame_detalles, textvariable = album)
 label_album.grid(column = 1, row = 4)
 
@@ -84,6 +88,10 @@ control_volumen = ttk.Scale(frame_controles, length = 150, from_ = 0, to = 9)
 control_volumen.grid(column = 7, row = 3)
 
     # === CREACIÓN DE LOS CONTROLES ===
+
+boton_abrir_carpeta = ttk.Button(frame_controles, text = "+", width = 2)
+boton_abrir_carpeta["command"] = abrir_carpeta
+boton_abrir_carpeta.grid(column = 1, row = 4)
 
 # === FRAME DE LOS BOTONES ===
 
