@@ -69,6 +69,10 @@ def detener_cancion(boton):
 
     cambiar_estado(boton)
 
+def cambiar_volumen(valor):
+    volumen = float(valor) / 10
+    mixer.music.set_volume(volumen)
+
 # === FUNCIONES DE REPRODUCCIÓN ===
 
 # === FRAME DE LA CARÁTULA ===
@@ -144,8 +148,15 @@ boton_siguente = ttk.Button(frame_controles, text = "|▶", width = 4)
 boton_siguente["command"] = siguente_cancion
 boton_siguente.grid(column = 6, row = 3)
 
-control_volumen = ttk.Scale(frame_controles, length = 150, from_ = 0, to = 9)
+volumen = StringVar()
+label_volumen = ttk.Label(frame_controles, textvariable = volumen)
+label_volumen.grid(column = 3, columnspan = 2, row = 5)
+
+control_volumen = ttk.Scale(frame_controles, length = 150, from_ = 0, to = 10, variable = volumen)
+control_volumen.set(10)
+control_volumen["command"] = cambiar_volumen
 control_volumen.grid(column = 1, columnspan = 6, row = 4)
+
 
     # === CREACIÓN DE LOS CONTROLES ===
 
