@@ -16,15 +16,32 @@ mainframe = ttk.Frame(root, width = 800, height = 600)
 mainframe["padding"] = 10
 mainframe.grid(column = 1, row = 1)
 
+# === FUNCIONES DE REPRODUCCIÓN ===
+
 def actualizar_metadatos(cancion):
-    metadatos = TinyTag(cancion)
+    metadatos = TinyTag.get(cancion)
 
-def reproducir_cancion(cancion):
-    mixer.music.load(cancion)
-    mixer.music.play()
+    titulo.set(metadatos.title)
+    artista.set(metadatos.artist)
+    album.set(metadatos.album)
 
-    if mixer.music.get_busy() or r.estado == r.PAUSA:
-        actualizar_metadatos(cancion)
+def reproducir_cancion():
+    if r.cancion_actual:
+        mixer.music.load(r.cancion_actual)
+        mixer.music.play()
+
+        actualizar_metadatos(r.cancion_actual)
+
+def siguente_cancion():
+    cantidad_canciones = len(r.cola_reproduccion) - 1
+
+    if r.posicion_actual >= cantidad_canciones:
+        return
+    
+    r.posicion_actual += 1
+    r.cancion_actual = r.cola_reproduccion[r.posicion_actual]
+
+    reproducir_cancion()
 
 def cambiar_estado(boton):
     if r.estado == r.REPRODUCCION:
@@ -43,13 +60,13 @@ def detener_cancion(boton):
 
     cambiar_estado(boton)
 
+# === FUNCIONES DE REPRODUCCIÓN ===
+
 # === FRAME DE LA CARÁTULA ===
 
-cancion = "C:/Users/Public/Music/2026.01.15 - Eyeball/02 - The Glamour of Rock.flac"
+canciones = abrir_carpeta()
 
-
-
-metadatos = TinyTag.get(cancion)
+r.cola_reproduccion.extend(canciones)
 
 frame_caratula = ttk.Frame(mainframe, width = 500, height = 600)
 frame_caratula.grid(column = 1, row = 1, rowspan = 2)
@@ -70,7 +87,7 @@ frame_detalles["relief"] = "sunken"
 frame_detalles.grid(column = 2, row = 1)
 
 titulo = StringVar(value = "Titulo desconocido")
-label_titulo = ttk.Label(frame_detalles, textvariable = titulo)
+label_titulo = ttk.Label(frame_detalles,textvariable = titulo)
 label_titulo["font"] = "TkHeadingFont:"
 label_titulo.grid(column = 1, row = 2)
 
@@ -96,28 +113,29 @@ frame_controles.grid(column = 2, row = 2)
 control_posicion = ttk.Scale(frame_controles, length = 300, from_= 0, to = 100)
 control_posicion.grid(column = 1, columnspan = 7, row = 1)
 
-boton_anterior = ttk.Button(frame_controles, text = "◀|", width = 2)
+boton_anterior = ttk.Button(frame_controles, text = "◀|", width = 4)
 boton_anterior.grid(column = 1, row = 3)
 
-boton_retroceder = ttk.Button(frame_controles, text = "◀◀", width = 2)
+boton_retroceder = ttk.Button(frame_controles, text = "◀◀", width = 4)
 boton_retroceder.grid(column = 2, row = 3)
 
-boton_estado = ttk.Button(frame_controles, text = "I I", width = 2)
+boton_estado = ttk.Button(frame_controles, text = "I I", width = 4)
 boton_estado["command"] = lambda boton = boton_estado: cambiar_estado(boton)
 boton_estado.grid(column = 3, row = 3)
 
-boton_stop = ttk.Button(frame_controles, text = "■", width = 2)
+boton_stop = ttk.Button(frame_controles, text = "■", width = 4)
 boton_stop["command"] = lambda boton = boton_estado: detener_cancion(boton)
 boton_stop.grid(column = 4, row = 3)
 
-boton_retroceder = ttk.Button(frame_controles, text = "▶▶", width = 2)
+boton_retroceder = ttk.Button(frame_controles, text = "▶▶", width = 4)
 boton_retroceder.grid(column = 5, row = 3)
 
-boton_siguente = ttk.Button(frame_controles, text = "|▶", width = 2)
+boton_siguente = ttk.Button(frame_controles, text = "|▶", width = 4)
+boton_siguente["command"] = siguente_cancion
 boton_siguente.grid(column = 6, row = 3)
 
 control_volumen = ttk.Scale(frame_controles, length = 150, from_ = 0, to = 9)
-control_volumen.grid(column = 7, row = 4)
+control_volumen.grid(column = 1, columnspan = 6, row = 4)
 
     # === CREACIÓN DE LOS CONTROLES ===
 
@@ -127,6 +145,6 @@ boton_abrir_carpeta.grid(column = 1, row = 5)
 
 # === FRAME DE LOS BOTONES ===
 
-reproducir_cancion(cancion)
+reproducir_cancion()
 
 root.mainloop()
