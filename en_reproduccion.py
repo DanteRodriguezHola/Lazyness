@@ -32,6 +32,15 @@ def reproducir_cancion():
 
         actualizar_metadatos(r.cancion_actual)
 
+def anterior_cancion():
+    if r.posicion_actual <= 0:
+        return
+    
+    r.posicion_actual -= 1
+    r.cancion_actual = r.cola_reproduccion[r.posicion_actual]
+
+    reproducir_cancion()
+
 def siguente_cancion():
     cantidad_canciones = len(r.cola_reproduccion) - 1
 
@@ -114,6 +123,7 @@ control_posicion = ttk.Scale(frame_controles, length = 300, from_= 0, to = 100)
 control_posicion.grid(column = 1, columnspan = 7, row = 1)
 
 boton_anterior = ttk.Button(frame_controles, text = "◀|", width = 4)
+boton_anterior["command"] = anterior_cancion
 boton_anterior.grid(column = 1, row = 3)
 
 boton_retroceder = ttk.Button(frame_controles, text = "◀◀", width = 4)
