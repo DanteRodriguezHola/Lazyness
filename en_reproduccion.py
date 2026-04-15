@@ -4,20 +4,35 @@ from tinytag import TinyTag
 
 from abrir_carpeta import abrir_carpeta
 
+import reproductor as r
+from reproductor import mixer
+
+
 root = Tk()
 root.title("Lazyness")
 root.geometry("800x600")
 root.resizable(False, False)
 
-root.option_add('*tearOff', FALSE)
-
 mainframe = ttk.Frame(root, width = 800, height = 600)
 mainframe["padding"] = 10
 mainframe.grid(column = 1, row = 1)
 
+def cambiar_estado():
+    if r.estado == r.REPRODUCCION:
+        mixer.music.pause()
+
+    elif r.estado == r.PAUSA:
+        mixer.music.unpause()
+
+    r.estado = not(r.estado)
+
 # === FRAME DE LA CARÁTULA ===
 
 cancion = "C:/Users/Public/Music/2026.01.15 - Eyeball/01 - Eyeball.flac"
+
+mixer.music.load(cancion)
+mixer.music.play()
+
 metadatos = TinyTag.get(cancion)
 
 frame_caratula = ttk.Frame(mainframe, width = 500, height = 600)
@@ -73,6 +88,7 @@ boton_retroceder.grid(column = 2, row = 3)
 
 estado = StringVar(value = "I I")
 boton_estado = ttk.Button(frame_controles, textvariable = estado, width = 2)
+boton_estado["command"] = cambiar_estado
 boton_estado.grid(column = 3, row = 3)
 
 boton_stop = ttk.Button(frame_controles, text = "■", width = 2)
@@ -94,5 +110,7 @@ boton_abrir_carpeta["command"] = abrir_carpeta
 boton_abrir_carpeta.grid(column = 1, row = 4)
 
 # === FRAME DE LOS BOTONES ===
+
+
 
 root.mainloop()
