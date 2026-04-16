@@ -66,9 +66,11 @@ class Reproductor:
 
             # === CREACIÓN DE LOS CONTROLES ===
 
+        """
         self.control_posicion = ttk.Scale(frame_controles, length = 300, from_= 0, to = 100)
         self.control_posicion.grid(column = 1, columnspan = 4, row = 1)
-
+        """
+        
         self.boton_anterior = ttk.Button(frame_controles, text = "◀|", width = 4)
         self.boton_anterior["command"] = self.anterior_cancion
         self.boton_anterior.grid(column = 1, row = 3)
@@ -78,9 +80,9 @@ class Reproductor:
         self.boton_estado["command"] = self.cambiar_estado
         self.boton_estado.grid(column = 2, row = 3)
 
-        self.boton_stop = ttk.Button(frame_controles, text = "■", width = 4)
-        self.boton_stop["command"] = self.detener_cancion
-        self.boton_stop.grid(column = 3, row = 3)
+        self.boton_detener = ttk.Button(frame_controles, text = "■", width = 4)
+        self.boton_detener["command"] = self.detener_cancion
+        self.boton_detener.grid(column = 3, row = 3)
 
 
         self.boton_siguente = ttk.Button(frame_controles, text = "|▶", width = 4)
@@ -99,28 +101,33 @@ class Reproductor:
 
             # === CREACIÓN DE LOS CONTROLES ===
 
+        """
         boton_abrir_carpeta = ttk.Button(frame_controles, text = "Abrir carpeta")
         boton_abrir_carpeta["command"] = abrir_carpeta
         boton_abrir_carpeta.grid(column = 1, row = 5)
-
+        """
         # === FRAME DE LOS BOTONES ===
 
         root.mainloop()
 
     def reproducir_cancion(self):
-        if r.cancion_actual:
-            mixer.music.load(r.cancion_actual)
-            mixer.music.play()
+        self.actualizar_cancion()
+        self.boton_detener["state"] = "normal"
 
-        self.actualizar_metadatos(r.cancion_actual)
+        mixer.music.play()
+        self.actualizar_metadatos()
 
-    def actualizar_metadatos(self, cancion):
-        metadatos = TinyTag.get(cancion)
+    def actualizar_metadatos(self):
+        metadatos = TinyTag.get(r.cancion_actual)
 
         self.titulo.set(metadatos.title)
         self.artista.set(metadatos.artist)
         self.album.set(metadatos.album)
 
+    def actualizar_cancion(self):
+        if r.cancion_actual:
+            mixer.music.load(r.cancion_actual)
+        
     def anterior_cancion(self):
         if r.posicion_actual <= 0:
             return
@@ -128,7 +135,11 @@ class Reproductor:
         r.posicion_actual -= 1
         r.cancion_actual = r.cola_reproduccion[r.posicion_actual]
 
-        self.reproducir_cancion()
+        if r.estado == r.REPRODUCCION:
+            self.reproducir_cancion()
+
+        if r.estado == r.PAUSA:
+            self.actualizar_metadatos(r.cancion_actual)
 
     def siguente_cancion(self):
         cantidad_canciones = len(r.cola_reproduccion) - 1
@@ -143,24 +154,29 @@ class Reproductor:
             self.reproducir_cancion()
 
         elif r.estado == r.PAUSA:
+            self.actualizar_cancion()
             self.actualizar_metadatos(r.cancion_actual)
 
     def cambiar_estado(self):
         if r.estado == r.REPRODUCCION:
             mixer.music.pause()
             self.estado.set("▶")
+            r.estado = r.PAUSA
 
         elif r.estado == r.PAUSA:
             mixer.music.unpause()
             self.estado.set("▮▮")
+            r.estado = r.REPRODUCCION
 
-        r.estado = not(r.estado)
+        self.boton_detener["state"] = "normal"
 
-    def detener_cancion(self, boton):
+    def detener_cancion(self):
         mixer.music.set_pos(0.00)
-        r.estado == r.PAUSA
+        self.boton_detener["state"] = "disabled"
 
-        self.cambiar_estado(boton)
+        mixer.music.pause()
+        self.estado.set("▶")
+        r.estado = r.PAUSA
 
     def cambiar_volumen(self, valor_volumen):
         volumen_redondeado = round(float(valor_volumen), 2)
