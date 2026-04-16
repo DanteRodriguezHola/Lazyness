@@ -1,11 +1,12 @@
 from tkinter import *
 from tkinter import ttk, filedialog, messagebox
 from tinytag import TinyTag
+from os import path
+from PIL import ImageTk, Image
 
 from abrir_carpeta import abrir_carpeta
-
-import cola as cola
 from cola import mixer
+import cola as cola
 
 class Reproductor:
     def __init__(self):
@@ -29,9 +30,9 @@ class Reproductor:
 
         ruta_caratula = "no_cover.png"
 
-        caratula = PhotoImage(file = ruta_caratula)
-        label_caratula = ttk.Label(frame_caratula, image = caratula)
-        label_caratula.grid(column = 1, row = 1)
+        self.caratula = ImageTk.PhotoImage(file = ruta_caratula)
+        self.label_caratula = ttk.Label(frame_caratula, image = self.caratula)
+        self.label_caratula.grid(column = 1, row = 1)
 
         # === FRAME DE LA CARÁTULA ===
 
@@ -50,10 +51,12 @@ class Reproductor:
 
         self.artista = StringVar(value = "Artista desconocido")
         label_artista = ttk.Label(frame_detalles, textvariable = self.artista)
+        label_artista["anchor"] = "center"
         label_artista.grid(column = 1, row = 3)
 
         self.album = StringVar(value = "Álbum desconocido")
         label_album = ttk.Label(frame_detalles, textvariable = self.album)
+        label_album["anchor"] = "center"
         label_album.grid(column = 1, row = 4)
 
         # === FRAME DE LOS DETALLES ===
@@ -125,6 +128,26 @@ class Reproductor:
         self.titulo.set(metadatos.title)
         self.artista.set(metadatos.artist)
         self.album.set(metadatos.album)
+
+        self.conseguir_caratula()
+
+    def conseguir_ruta_caratula(self):
+        ruta_carpeta = path.dirname(cola.cancion_actual)
+        nombre_caratula = "front.jpg"
+
+        ruta_caratula = path.join(ruta_carpeta, nombre_caratula)
+
+        return ruta_caratula
+
+    def conseguir_caratula(self):
+        ruta_caratula = self.conseguir_ruta_caratula()
+
+        caratula = Image.open(ruta_caratula)
+        caratula = caratula.resize((500, 500))
+
+        self.caratula = ImageTk.PhotoImage(caratula)
+        self.label_caratula.configure(image = self.caratula)
+
 
     def actualizar_cancion_actual(self):
         cola.cancion_actual = cola.cola_reproduccion[cola.posicion_actual]

@@ -35,9 +35,9 @@ def examinar_carpetas(carpeta_padre):
         carpeta_actual = carpetas_restantes[0]
         canciones, subcarpetas = examinar_elementos(carpeta_actual)
 
-        canciones_total.extend(canciones)
         carpetas_restantes.extend(subcarpetas)
-
+        canciones_total.extend(canciones)
+        
         carpetas_restantes.remove(carpeta_actual)
 
     return canciones
