@@ -43,7 +43,8 @@ class Reproductor:
         frame_detalles.grid(column = 2, row = 1)
 
         self.titulo = StringVar(value = "Titulo desconocido")
-        label_titulo = ttk.Label(frame_detalles,textvariable = self.titulo)
+        label_titulo = ttk.Label(frame_detalles,textvariable = self.titulo, width = 29)
+        label_titulo["anchor"] = "center"
         label_titulo["font"] = "TkHeadingFont:"
         label_titulo.grid(column = 1, row = 2)
 
@@ -142,6 +143,8 @@ class Reproductor:
             self.actualizar_metadatos()
 
     def siguente_cancion(self):
+        cola.cantidad_canciones = len(cola.cola_reproduccion) - 1
+
         if cola.posicion_actual >= cola.cantidad_canciones:
             return
         
