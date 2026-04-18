@@ -28,7 +28,7 @@ class Reproductor:
         frame_caratula = ttk.Frame(mainframe, width = 500, height = 600)
         frame_caratula.grid(column = 1, row = 1, rowspan = 2)
 
-        ruta_caratula = "no_cover.png"
+        ruta_caratula = "no cover.png"
 
         self.caratula = ImageTk.PhotoImage(file = ruta_caratula)
         self.label_caratula = ttk.Label(frame_caratula, image = self.caratula)
