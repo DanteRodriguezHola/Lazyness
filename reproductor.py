@@ -1,5 +1,4 @@
 from tkinter import *
-from tkinter import ttk, filedialog, messagebox
 from tinytag import TinyTag
 from os import path
 from PIL import ImageTk, Image
@@ -11,7 +10,7 @@ import cola as cola
 class Reproductor:
     def __init__(self):
         root = Tk()
-        root.title("Lazyness")
+        root.title("Rogilla")
         root.geometry("800x600")
         root.resizable(False, False)
 
@@ -128,7 +127,7 @@ class Reproductor:
         self.titulo.set(metadatos.title)
         self.artista.set(metadatos.artist)
         self.album.set(metadatos.album)
-
+        
         self.conseguir_caratula()
 
     def conseguir_ruta_caratula(self):
@@ -179,17 +178,23 @@ class Reproductor:
 
         elif cola.estado == cola.PAUSA:
             self.actualizar_metadatos()
-
+            
+    def pausar_cancion(self):
+        mixer.music.pause()
+        cola.estado = cola.PAUSA
+        self.estado.set("▶")
+        
+    def reanudar_cancion(self):
+        mixer.music.unpause()
+        cola.estado = cola.REPRODUCCION
+        self.estado.set("▮▮")
+        
     def cambiar_estado(self):
         if cola.estado == cola.REPRODUCCION:
-            mixer.music.pause()
-            self.estado.set("▶")
-            cola.estado = cola.PAUSA
+            self.pausar_cancion()
 
         elif cola.estado == cola.PAUSA:
-            mixer.music.unpause()
-            self.estado.set("▮▮")
-            cola.estado = cola.REPRODUCCION
+            self.reanudar_cancion()
 
         self.boton_detener["state"] = "normal"
 
@@ -200,9 +205,15 @@ class Reproductor:
         mixer.music.pause()
         self.estado.set("▶")
         cola.estado = cola.PAUSA
-
+    
+    def redondear_volumen(self, valor_volumen):
+        valor_volumen = float(valor_volumen)
+        volumen_redondeado = round(valor_volumen, 2)
+        
+        return volumen_redondeado
+    
     def cambiar_volumen(self, valor_volumen):
-        volumen_redondeado = round(float(valor_volumen), 2)
+        volumen_redondeado = self.redondear_volumen(valor_volumen)
         nuevo_volumen = volumen_redondeado / 10
 
         mixer.music.set_volume(nuevo_volumen)

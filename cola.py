@@ -1,5 +1,4 @@
 from pygame import mixer
-from abrir_carpeta import abrir_carpeta
 
 mixer.init()
 
