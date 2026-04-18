@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import ttk
 from tinytag import TinyTag
 from os import path
 from PIL import ImageTk, Image

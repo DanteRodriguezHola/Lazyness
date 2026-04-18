@@ -1,14 +1,15 @@
 from tkinter import filedialog, messagebox
 from os import path, listdir
+import fleep
 
-def es_audio(elemento):
-    if elemento.endswith(".mp3"):
-        return True
-
-    if elemento.endswith(".flac"):
-        return True
-
-    return False   
+def es_audio(ruta_archivo):
+    with open(ruta_archivo, "rb") as archivo:
+        tipo_archivo = fleep.get(archivo.read(128))
+        if tipo_archivo.type == ["audio"]:
+            return True
+        
+        else:
+            return False
 
 def examinar_elementos(carpeta):
     elementos_encontrados = listdir(carpeta)
@@ -40,7 +41,7 @@ def examinar_carpetas(carpeta_padre):
         
         carpetas_restantes.remove(carpeta_actual)
 
-    return canciones
+    return canciones_total
         
 def abrir_carpeta():
     carpeta = filedialog.askdirectory()
