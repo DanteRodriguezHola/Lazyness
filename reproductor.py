@@ -50,12 +50,12 @@ class Reproductor:
         label_titulo.grid(column = 1, row = 2)
 
         self.artista = StringVar(value = "Artista desconocido")
-        label_artista = ttk.Label(frame_detalles, textvariable = self.artista)
+        label_artista = ttk.Label(frame_detalles, textvariable = self.artista, width = 29)
         label_artista["anchor"] = "center"
         label_artista.grid(column = 1, row = 3)
 
         self.album = StringVar(value = "Álbum desconocido")
-        label_album = ttk.Label(frame_detalles, textvariable = self.album)
+        label_album = ttk.Label(frame_detalles, textvariable = self.album, width = 58)
         label_album["anchor"] = "center"
         label_album.grid(column = 1, row = 4)
 
