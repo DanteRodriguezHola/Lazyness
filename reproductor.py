@@ -1,12 +1,13 @@
 from tkinter import *
 from tkinter import ttk
 from tinytag import TinyTag
-from os import path
 from PIL import ImageTk, Image
 
 from abrir_carpeta import abrir_carpeta
 from cola import mixer
-import cola as cola
+
+import caratula
+import cola
 
 class Reproductor:
     def __init__(self):
@@ -18,22 +19,32 @@ class Reproductor:
         mainframe = ttk.Frame(root, width = 800, height = 600)
         mainframe["padding"] = 10
         mainframe.grid(column = 1, row = 1)
-
-        # === FRAME DE LA CARÁTULA ===
-
+        
         canciones = abrir_carpeta()
 
         cola.cola_reproduccion.extend(canciones)
+
+        # === FRAME DE LA CARÁTULA ===
 
         frame_caratula = ttk.Frame(mainframe, width = 500, height = 600)
         frame_caratula.grid(column = 1, row = 1, rowspan = 2)
 
         ruta_caratula = "no cover.png"
-
+        
         self.caratula = ImageTk.PhotoImage(file = ruta_caratula)
         self.label_caratula = ttk.Label(frame_caratula, image = self.caratula)
-        self.label_caratula.grid(column = 1, row = 1)
-
+        self.label_caratula.grid(column = 1, columnspan = 2, row = 1)
+        
+        self.boton_anterior_caratula = ttk.Button(frame_caratula, text = "◀", width = 2)
+        self.boton_anterior_caratula["command"] = self.anterior_caratula
+        self.boton_anterior_caratula.grid(column = 1, row = 2, sticky = "E")
+        
+        self.boton_siguente_caratula = ttk.Button(frame_caratula, text = "▶", width = 2)
+        self.boton_siguente_caratula["command"] = self.siguente_caratula
+        self.boton_siguente_caratula.grid(column = 2, row = 2, sticky = "W")
+        
+        
+        
         # === FRAME DE LA CARÁTULA ===
 
         # === FRAME DE LOS DETALLES ===
@@ -50,12 +61,12 @@ class Reproductor:
         label_titulo.grid(column = 1, row = 2)
 
         self.artista = StringVar(value = "Artista desconocido")
-        label_artista = ttk.Label(frame_detalles, textvariable = self.artista, width = 29)
+        label_artista = ttk.Label(frame_detalles, textvariable = self.artista)
         label_artista["anchor"] = "center"
         label_artista.grid(column = 1, row = 3)
 
         self.album = StringVar(value = "Álbum desconocido")
-        label_album = ttk.Label(frame_detalles, textvariable = self.album, width = 58)
+        label_album = ttk.Label(frame_detalles, textvariable = self.album)
         label_album["anchor"] = "center"
         label_album.grid(column = 1, row = 4)
 
@@ -113,7 +124,65 @@ class Reproductor:
         # === FRAME DE LOS BOTONES ===
 
         root.mainloop()
+    
+    # === DEFINICIONES DE FUNCIONES ===
+    
+        # === FUNCIONES DE LOS METADATOS Y LAS CARATULAS ===
+        
+    def actualizar_metadatos(self):
+        metadatos = TinyTag.get(cola.cancion_actual)
 
+        self.titulo.set(metadatos.title)
+        self.artista.set(metadatos.artist)
+        self.album.set(metadatos.album)
+        self.actualizar_caratula()
+        
+    def actualizar_datos_caratula(self):
+        caratula.caratulas = caratula.obtener_caratulas()
+        caratula.cantidad_caratulas = len(caratula.caratulas) - 1
+        caratula.posicial_actual = 0
+        
+    def actualizar_caratula(self):
+        self.actualizar_datos_caratula()
+        
+        ruta_caratula = caratula.caratulas[caratula.posicion_actual]
+
+        caratula_imagen = Image.open(ruta_caratula)
+        caratula_imagen = caratula_imagen.resize((500, 500))
+
+        self.caratula = ImageTk.PhotoImage(caratula_imagen)
+        self.label_caratula.configure(image = self.caratula)
+
+    def anterior_caratula(self):
+        if caratula.posicion_actual <= 0:
+            return
+        
+        caratula.posicion_actual -= 1
+        
+        ruta_caratula = caratula.caratulas[caratula.posicion_actual]
+
+        caratula_imagen = Image.open(ruta_caratula)
+        caratula_imagen = caratula_imagen.resize((500, 500))
+
+        self.caratula = ImageTk.PhotoImage(caratula_imagen)
+        self.label_caratula.configure(image = self.caratula)
+
+    def siguente_caratula(self):
+        if caratula.posicion_actual >= caratula.cantidad_caratulas:
+            return
+        
+        caratula.posicion_actual += 1
+        
+        ruta_caratula = caratula.caratulas[caratula.posicion_actual]
+
+        caratula_imagen = Image.open(ruta_caratula)
+        caratula_imagen = caratula_imagen.resize((500, 500))
+
+        self.caratula = ImageTk.PhotoImage(caratula_imagen)
+        self.label_caratula.configure(image = self.caratula)
+    
+        # === FUNCIONES DE LOS METADATOS Y LAS CARATULAS ===
+        
     def reproducir_cancion(self):
         mixer.music.load(cola.cancion_actual)
         mixer.music.play()
@@ -121,34 +190,7 @@ class Reproductor:
 
         mixer.music.play()
         self.actualizar_metadatos()
-
-    def actualizar_metadatos(self):
-        metadatos = TinyTag.get(cola.cancion_actual)
-
-        self.titulo.set(metadatos.title)
-        self.artista.set(metadatos.artist)
-        self.album.set(metadatos.album)
         
-        self.conseguir_caratula()
-
-    def conseguir_ruta_caratula(self):
-        ruta_carpeta = path.dirname(cola.cancion_actual)
-        nombre_caratula = "front.jpg"
-
-        ruta_caratula = path.join(ruta_carpeta, nombre_caratula)
-
-        return ruta_caratula
-
-    def conseguir_caratula(self):
-        ruta_caratula = self.conseguir_ruta_caratula()
-
-        caratula = Image.open(ruta_caratula)
-        caratula = caratula.resize((500, 500))
-
-        self.caratula = ImageTk.PhotoImage(caratula)
-        self.label_caratula.configure(image = self.caratula)
-
-
     def actualizar_cancion_actual(self):
         cola.cancion_actual = cola.cola_reproduccion[cola.posicion_actual]
         
@@ -219,5 +261,6 @@ class Reproductor:
 
         mixer.music.set_volume(nuevo_volumen)
         self.volumen.set(volumen_redondeado)
-
+        
+    # === DEFINICIONES DE FUNCIONES ===
 Reproductor()
