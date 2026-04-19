@@ -53,6 +53,12 @@ def clasificar_caratulas(imagenes, caratulas):
             
     return caratulas
 
+def redimensionar_caratula(caratula):
+    caratula = Image.open(caratula)
+    caratula = caratula.resize((500, 500))
+    
+    return caratula
+
 def asignar_caratulas(imagenes):
     caratulas_posibles = {
         "single": None,
@@ -66,6 +72,7 @@ def asignar_caratulas(imagenes):
     
     for caratula in caratulas_posibles.values():
         if caratula:
+            caratula = redimensionar_caratula(caratula)
             caratulas_encontradas.append(caratula)
             
     return caratulas_encontradas

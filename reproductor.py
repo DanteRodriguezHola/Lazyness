@@ -145,12 +145,9 @@ class Reproductor:
     def actualizar_caratula(self):
         self.actualizar_datos_caratula()
         
-        ruta_caratula = caratula.caratulas[caratula.posicion_actual]
+        imagen_caratula = caratula.caratulas[caratula.posicion_actual]
 
-        caratula_imagen = Image.open(ruta_caratula)
-        caratula_imagen = caratula_imagen.resize((500, 500))
-
-        self.caratula = ImageTk.PhotoImage(caratula_imagen)
+        self.caratula = ImageTk.PhotoImage(imagen_caratula)
         self.label_caratula.configure(image = self.caratula)
 
     def anterior_caratula(self):
@@ -159,12 +156,9 @@ class Reproductor:
         
         caratula.posicion_actual -= 1
         
-        ruta_caratula = caratula.caratulas[caratula.posicion_actual]
+        imagen_caratula = caratula.caratulas[caratula.posicion_actual]
 
-        caratula_imagen = Image.open(ruta_caratula)
-        caratula_imagen = caratula_imagen.resize((500, 500))
-
-        self.caratula = ImageTk.PhotoImage(caratula_imagen)
+        self.caratula = ImageTk.PhotoImage(imagen_caratula)
         self.label_caratula.configure(image = self.caratula)
 
     def siguente_caratula(self):
@@ -173,12 +167,9 @@ class Reproductor:
         
         caratula.posicion_actual += 1
         
-        ruta_caratula = caratula.caratulas[caratula.posicion_actual]
+        imagen_caratula = caratula.caratulas[caratula.posicion_actual]
 
-        caratula_imagen = Image.open(ruta_caratula)
-        caratula_imagen = caratula_imagen.resize((500, 500))
-
-        self.caratula = ImageTk.PhotoImage(caratula_imagen)
+        self.caratula = ImageTk.PhotoImage(imagen_caratula)
         self.label_caratula.configure(image = self.caratula)
     
         # === FUNCIONES DE LOS METADATOS Y LAS CARATULAS ===
