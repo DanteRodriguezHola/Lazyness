@@ -1,6 +1,7 @@
 from os import path, listdir
 from pathlib import Path
 from PIL import Image
+from tkinter import filedialog
 
 import cola
 
@@ -12,7 +13,8 @@ def es_imagen(ruta_elemento):
 
     except (IOError, SyntaxError):
         return False
-    
+
+"""
 def examinar_elementos(carpeta):
     elementos_encontrados = listdir(carpeta)
     imagenes_encontradas = []
@@ -89,3 +91,23 @@ def obtener_caratulas():
 caratulas = []
 cantidad_caratulas = len(caratulas) -1
 posicion_actual = 0
+"""
+
+def obtener_imagen_caratula():
+    imagen_default= Image.open("default.png")
+    
+    if not cola.cancion_actual:
+        return imagen_default
+    
+    ruta_carpeta = path.dirname(cola.cancion_actual)
+    elementos_encontrados = listdir(ruta_carpeta)
+    nombre_caratula = "front.jpg"
+    
+    if not nombre_caratula in elementos_encontrados:
+        return imagen_default
+    
+    ruta_caratula = path.join(ruta_carpeta, nombre_caratula)
+    imagen_caratula = Image.open(ruta_caratula)
+    imagen_caratula = imagen_caratula.resize((500, 500))
+    
+    return imagen_caratula

@@ -29,12 +29,13 @@ class Reproductor:
         frame_caratula = ttk.Frame(mainframe, width = 500, height = 600)
         frame_caratula.grid(column = 1, row = 1, rowspan = 2)
 
-        ruta_caratula = "no cover.png"
+        nombre_caratula = "default.png"
         
-        self.caratula = ImageTk.PhotoImage(file = ruta_caratula)
+        self.caratula = ImageTk.PhotoImage(file = nombre_caratula)
         self.label_caratula = ttk.Label(frame_caratula, image = self.caratula)
-        self.label_caratula.grid(column = 1, columnspan = 2, row = 1)
+        self.label_caratula.grid(column = 1, row = 1)
         
+        """
         self.boton_anterior_caratula = ttk.Button(frame_caratula, text = "◀", width = 2)
         self.boton_anterior_caratula["command"] = self.anterior_caratula
         self.boton_anterior_caratula.grid(column = 1, row = 2, sticky = "E")
@@ -42,8 +43,7 @@ class Reproductor:
         self.boton_siguente_caratula = ttk.Button(frame_caratula, text = "▶", width = 2)
         self.boton_siguente_caratula["command"] = self.siguente_caratula
         self.boton_siguente_caratula.grid(column = 2, row = 2, sticky = "W")
-        
-        
+        """
         
         # === FRAME DE LA CARÁTULA ===
 
@@ -136,20 +136,21 @@ class Reproductor:
         self.artista.set(metadatos.artist)
         self.album.set(metadatos.album)
         self.actualizar_caratula()
-        
+    
+    """
     def actualizar_datos_caratula(self):
         caratula.caratulas = caratula.obtener_caratulas()
         caratula.cantidad_caratulas = len(caratula.caratulas) - 1
         caratula.posicial_actual = 0
-        
-    def actualizar_caratula(self):
-        self.actualizar_datos_caratula()
-        
-        imagen_caratula = caratula.caratulas[caratula.posicion_actual]
+    """
+    
+    def actualizar_caratula(self):        
+        imagen_caratula = caratula.obtener_imagen_caratula()
 
         self.caratula = ImageTk.PhotoImage(imagen_caratula)
         self.label_caratula.configure(image = self.caratula)
-
+        
+    """
     def anterior_caratula(self):
         if caratula.posicion_actual <= 0:
             return
@@ -171,6 +172,7 @@ class Reproductor:
 
         self.caratula = ImageTk.PhotoImage(imagen_caratula)
         self.label_caratula.configure(image = self.caratula)
+    """
     
         # === FUNCIONES DE LOS METADATOS Y LAS CARATULAS ===
         
