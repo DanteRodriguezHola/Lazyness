@@ -29,6 +29,25 @@ class Reproductor:
 
         self.actualizar_datos_cola()
 
+        # === DEFINICION DE LOS ESTILOS ===
+
+        tema = "clam"
+
+        estilo_frame = ttk.Style()
+        estilo_frame.theme_use(tema)
+        estilo_frame.configure("TFrame", background = "#FAC41A")
+
+        estilo_label = ttk.Style()
+        estilo_label.theme_use(tema)
+        estilo_label.configure("TLabel", background = "#FAC41A", foreground = "#000000")
+
+        estilo_boton = ttk.Style()
+        estilo_boton.theme_use(tema)
+        estilo_boton.configure("TButton", background = "black", foreground = "#FAC41A")
+        estilo_boton.map("TButton", background=[('active','black')])
+
+        # === DEFINICION DE LOS ESTILOS ===
+
         # === FRAME DE LA CARÁTULA ===
 
         frame_caratula = ttk.Frame(mainframe, width = 500, height = 600)
@@ -84,10 +103,7 @@ class Reproductor:
 
             # === CREACIÓN DE LOS CONTROLES ===
 
-        estilo_boton = ttk.Style()
-        estilo_boton.theme_use("alt")
-        estilo_boton.configure("TButton", background = "black", foreground = "#FAC41A")
-        estilo_boton.map("TButton", background=[('active','black')])
+
 
         """
         self.control_posicion = ttk.Scale(frame_controles, length = 300, from_= 0, to = 100)
