@@ -83,10 +83,15 @@ class Reproductor:
 
         """
         self.control_posicion = ttk.Scale(frame_controles, length = 300, from_= 0, to = 100)
-        self.control_posicion.grid(column = 1, columnspan = 4, row = 1)
+        self.control_posicion.grid(column = 1, columnspan = 4, row = 2)
         """
 
-        self.boton_anterior = ttk.Button(frame_controles, text = "◀|", width = 4)
+        self.string_playback = StringVar(value = "⇉")
+        self.boton_playback = ttk.Button(frame_controles, textvariable = self.string_playback, width = 4)
+        self.boton_playback["command"] = self.cambiar_playback
+        self.boton_playback.grid(column = 4, row = 1)
+        
+        self.boton_anterior = ttk.Button(frame_controles, text = "◀▮", width = 4)
         self.boton_anterior["command"] = self.anterior_cancion
         self.boton_anterior.grid(column = 1, row = 3)
 
@@ -100,7 +105,7 @@ class Reproductor:
         self.boton_detener.grid(column = 3, row = 3)
 
 
-        self.boton_siguente = ttk.Button(frame_controles, text = "|▶", width = 4)
+        self.boton_siguente = ttk.Button(frame_controles, text = "▮▶", width = 4)
         self.boton_siguente["command"] = self.siguente_cancion
         self.boton_siguente.grid(column = 4, row = 3)
 
@@ -186,7 +191,23 @@ class Reproductor:
         
     def actualizar_cancion_actual(self):
         cola.cancion_actual = cola.cola_reproduccion[cola.posicion_actual]
-        
+    
+    def aleatorizar_cola(self):
+        pass
+
+    def normalizar_cola(self):
+        cola.cola_reproduccion = cola.cola_base
+
+    def cambiar_playback(self):
+        if cola.playback == cola.NORMAL:
+            cola.playback = cola.ALEATORIO
+            self.string_playback.set("⇆")
+
+        elif cola.playback == cola.ALEATORIO:
+            self.normalizar_cola()
+            cola.playback = cola.NORMAL
+            self.string_playback.set("⇉")
+
     def anterior_cancion(self):
         if cola.posicion_actual <= 0:
             return
