@@ -185,74 +185,77 @@ class Reproductor:
         # === FUNCIONES DE LOS METADATOS Y LAS CARATULAS ===
         
     def reproducir_cancion(self):
-        mixer.music.load(cola.cancion_actual)
         mixer.music.play()
         self.boton_detener["state"] = "normal"
-
-        mixer.music.play()
+    
+    def cargar_cancion(self):
+        mixer.music.load(cola.cancion_actual)
+        self.check_song_position()
         self.actualizar_metadatos()
-        
+
+    def check_song_position(self):
+        cola.cantidad_canciones = len(cola.cola_reproduccion) - 1
+
+        if cola.posicion_actual <= 0:
+            self.boton_anterior["state"] = "disable"
+        else:
+            self.boton_anterior["state"] = "normal"
+
+        if cola.posicion_actual >= cola.cantidad_canciones:
+            self.boton_siguente["state"] = "disable"
+        else:
+            self.boton_siguente["state"] = "normal"
+
     def actualizar_cancion_actual(self):
         cola.cancion_actual = cola.cola_reproduccion[cola.posicion_actual]
+
+        # === FUNCIONES DE LA COLA ===
+
+    def actualizar_datos_cola(self):
+        pass
     
-    def mostrar_cola(self):
-        system("cls")
-
-        print("cola reproduccion:")
-        for cancion in cola.cola_reproduccion:
-            print(cancion)
-
-        print("\ncola base:")
-        for cancion in cola.cola_base:
-            print(cancion)
-
     def aleatorizar_cola(self):
         cola.cola_reproduccion.remove(cola.cancion_actual)
         shuffle(cola.cola_reproduccion)
+        cola.posicion_actual = 0
         cola.cola_reproduccion.insert(0, cola.cancion_actual)
-        
+
+        cola.playback = cola.NORMAL
+        self.string_playback.set("⇉")
+
     def normalizar_cola(self):
         cola.cola_reproduccion = cola.cola_base.copy()
         cola.posicion_actual = cola.cola_reproduccion.index(cola.cancion_actual)
 
+        cola.playback = cola.ALEATORIO
+        self.string_playback.set("⇆")
+        
     def cambiar_playback(self):
         if cola.playback == cola.NORMAL:
             self.aleatorizar_cola()
-            cola.playback = cola.ALEATORIO
-            self.string_playback.set("⇆")
 
         elif cola.playback == cola.ALEATORIO:
             self.normalizar_cola()
-            cola.playback = cola.NORMAL
-            self.string_playback.set("⇉")
+
+        # === FUNCIONES DE LA COLA ===
+
+        # === FUNCIONES DE LOS CONTROLES DE POSICION ===
 
     def anterior_cancion(self):
-        if cola.posicion_actual <= 0:
-            return
-        
         cola.posicion_actual -= 1
         self.actualizar_cancion_actual()
+        self.cargar_cancion()
 
         if cola.estado == cola.REPRODUCCION:
             self.reproducir_cancion()
-
-        if cola.estado == cola.PAUSA:
-            self.actualizar_metadatos()
 
     def siguente_cancion(self):
-        cola.cantidad_canciones = len(cola.cola_reproduccion) - 1
-
-        if cola.posicion_actual >= cola.cantidad_canciones:
-            return
-        
         cola.posicion_actual += 1
         self.actualizar_cancion_actual()
+        self.cargar_cancion()
 
         if cola.estado == cola.REPRODUCCION:
             self.reproducir_cancion()
-
-        elif cola.estado == cola.PAUSA:
-            self.actualizar_metadatos()
             
     def pausar_cancion(self):
         mixer.music.pause()
@@ -293,6 +296,8 @@ class Reproductor:
 
         mixer.music.set_volume(nuevo_volumen)
         self.volumen.set(volumen_redondeado)
-        
+
+        # === FUNCIONES DE LOS CONTROLES DE POSICION ===
+
     # === DEFINICIONES DE FUNCIONES ===
 Reproductor()
