@@ -157,8 +157,9 @@ class Reproductor:
         self.boton_abrir_archivos = ttk.Button(frame_controles_cola, text = "Abrir archivos")
         self.boton_abrir_archivos.grid(column = 2, row = 1)
 
-        self.boton_abrir_carpeta = ttk.Button(frame_controles_cola, text = "Abrir playlist")
-        self.boton_abrir_carpeta.grid(column = 1, row = 3)
+        self.boton_abrir_playlist = ttk.Button(frame_controles_cola, text = "Abrir playlist")
+        self.boton_abrir_playlist["command"] = self.añadir_desde_playlist
+        self.boton_abrir_playlist.grid(column = 1, row = 3)
 
         # === FRAME DE LOS BOTONES ===
 
@@ -265,8 +266,16 @@ class Reproductor:
         cola.cola_base = canciones
         cola.cola_reproduccion = canciones
 
-        self.actualizar_datos_cola()
-        cola.posicion_actual = 0
+        self.empezar_nueva_cola()
+
+    def añadir_desde_playlist(self):
+        canciones = leer_playlist()
+
+        cola.cola_base = canciones
+        cola.cola_reproduccion = canciones
+
+        self.empezar_nueva_cola()
+
         # === FUNCIONES DE LA COLA ===
 
     def actualizar_datos_cola(self):
@@ -294,6 +303,17 @@ class Reproductor:
             self.string_playback.set("⇉")
 
         self.check_song_position()
+
+    def reiniciar_datos_cola(self):
+        cola.cantidad_canciones = len(cola.cola_reproduccion)
+        cola.posicion_actual = 0
+        cola.cancion_actual = cola.cola_reproduccion[cola.posicion_actual]
+
+    def empezar_nueva_cola(self):
+        self.reiniciar_datos_cola()
+
+        self.cargar_cancion()
+        self.reproducir_cancion()
 
         # === FUNCIONES DE LA COLA ===
 

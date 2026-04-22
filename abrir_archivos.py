@@ -76,7 +76,7 @@ def abrir_playlist():
     return ruta_playlist
 
 def leer_playlist():
-    ruta_playlist = abrir_playlist
+    ruta_playlist = abrir_playlist()
     canciones = examinar_playlist(ruta_playlist)
 
     return canciones
