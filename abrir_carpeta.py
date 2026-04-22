@@ -2,6 +2,7 @@ from tkinter import filedialog, messagebox
 from os import path, listdir
 import fleep
 
+import cola
 def es_audio(ruta_archivo):
     with open(ruta_archivo, "rb") as archivo:
         tipo_archivo = fleep.get(archivo.read(128))
@@ -47,4 +48,5 @@ def abrir_carpeta():
     carpeta = filedialog.askdirectory()
     canciones = examinar_carpetas(carpeta)
 
-    return canciones
+    cola.cola_base = canciones
+    cola.cola_reproduccion = canciones

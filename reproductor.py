@@ -24,9 +24,6 @@ class Reproductor:
         
         canciones = abrir_carpeta()
 
-        cola.cola_reproduccion.extend(canciones)
-        cola.cola_base.extend(canciones)
-
         self.actualizar_datos_cola()
 
         # === DEFINICION DE LOS ESTILOS ===
@@ -73,7 +70,7 @@ class Reproductor:
 
         # === FRAME DE LOS DETALLES ===
         
-        frame_detalles = ttk.Frame(mainframe, width = 300, height = 300)
+        frame_detalles = ttk.Frame(mainframe, width = 200, height = 200)
         frame_detalles["padding"] = 10
         frame_detalles.grid(column = 2, row = 1)
 
@@ -97,59 +94,62 @@ class Reproductor:
 
         # === FRAME DE LOS CONTROLES ===
 
-        frame_controles = ttk.Frame(mainframe, width = 300, height = 300)
-        frame_controles["padding"] = 5
-        frame_controles.grid(column = 2, row = 2)
+        frame_controles_reproduccion = ttk.Frame(mainframe, width = 200, height = 200)
+        frame_controles_reproduccion["padding"] = 5
+        frame_controles_reproduccion.grid(column = 2, row = 2)
 
-            # === CREACIÓN DE LOS CONTROLES ===
+            # === CREACIÓN DE LOS CONTROLES DE REPRODUCCION ===
 
-
-
-        """
-        self.control_posicion = ttk.Scale(frame_controles, length = 300, from_= 0, to = 100)
-        self.control_posicion.grid(column = 1, columnspan = 4, row = 2)
-        """
+        self.control_progreso = ttk.Progressbar(frame_controles_reproduccion, length = 180, orient = "horizontal")
+        self.control_progreso.grid(column = 1, columnspan = 4, row = 2)
 
         self.string_playback = StringVar(value = "⇉")
-        self.boton_playback = ttk.Button(frame_controles, textvariable = self.string_playback, width = 4)
+        self.boton_playback = ttk.Button(frame_controles_reproduccion, textvariable = self.string_playback, width = 4)
         self.boton_playback["command"] = self.cambiar_playback
         self.boton_playback.grid(column = 4, row = 1)
         
-        self.boton_anterior = ttk.Button(frame_controles, text = "◀▮", width = 4)
+        self.boton_anterior = ttk.Button(frame_controles_reproduccion, text = "◀▮", width = 4)
         self.boton_anterior["command"] = self.anterior_cancion
         self.boton_anterior.grid(column = 1, row = 3)
 
         self.estado = StringVar(value = "▮▮")
-        self.boton_estado = ttk.Button(frame_controles, textvariable = self.estado, width = 4)
+        self.boton_estado = ttk.Button(frame_controles_reproduccion, textvariable = self.estado, width = 4)
         self.boton_estado["command"] = self.cambiar_estado
         self.boton_estado.grid(column = 2, row = 3)
 
-        self.boton_detener = ttk.Button(frame_controles, text = "■", width = 4)
+        self.boton_detener = ttk.Button(frame_controles_reproduccion, text = "■", width = 4)
         self.boton_detener["command"] = self.detener_cancion
         self.boton_detener.grid(column = 3, row = 3)
 
 
-        self.boton_siguente = ttk.Button(frame_controles, text = "▮▶", width = 4)
+        self.boton_siguente = ttk.Button(frame_controles_reproduccion, text = "▮▶", width = 4)
         self.boton_siguente["command"] = self.siguente_cancion
         self.boton_siguente.grid(column = 4, row = 3)
 
         self.volumen = StringVar(value = "10")
-        self.label_volumen = ttk.Label(frame_controles, textvariable = self.volumen)
+        self.label_volumen = ttk.Label(frame_controles_reproduccion, textvariable = self.volumen)
         self.label_volumen.grid(column = 2, columnspan = 2, row = 5)
 
-        self.control_volumen = ttk.Scale(frame_controles, length = 150, from_ = 0, to = 10)
+        self.control_volumen = ttk.Scale(frame_controles_reproduccion, length = 150, from_ = 0, to = 10)
         self.control_volumen.set(10)
         self.control_volumen["command"] = self.cambiar_volumen
         self.control_volumen.grid(column = 1, columnspan = 4, row = 4)
 
 
-            # === CREACIÓN DE LOS CONTROLES ===
+            # === CREACIÓN DE LOS CONTROLES DE REPRODUCCION ===
 
-        """
-        boton_abrir_carpeta = ttk.Button(frame_controles, text = "Abrir carpeta")
-        boton_abrir_carpeta["command"] = abrir_carpeta
-        boton_abrir_carpeta.grid(column = 1, row = 5)
-        """
+        # === FRAME DE LOS CONTROLES DE COLA ===
+
+        frame_controles_cola = ttk.Frame(mainframe, width = 200, height = 200)
+        frame_controles_cola["padding"] = 5
+        frame_controles_cola.grid(column = 2, row = 3)
+
+        self.boton_abrir_carpeta = ttk.Button(frame_controles_cola, text = "Abrir carpeta")
+        self.boton_abrir_carpeta["command"] = abrir_carpeta
+        self.boton_abrir_carpeta.grid(column = 1, row = 1)
+
+        self.boton_abrir_archivos = ttk.Button(frame_controles_cola, text = "Abrir archivos")
+        self.boton_abrir_archivos.grid(column = 2, row = 1)
 
         # === FRAME DE LOS BOTONES ===
 
@@ -209,7 +209,16 @@ class Reproductor:
     def reproducir_cancion(self):
         mixer.music.play()
         self.boton_detener["state"] = "normal"
-    
+
+    def check_song_stopped(self):
+        if mixer.music.get_busy or cola.estado == cola.PAUSA:
+            return
+        
+        if cola.posicion_actual >= cola.cantidad_canciones:
+            self.detener_cancion()
+
+        self.siguente_cancion()
+
     def cargar_cancion(self):
         mixer.music.load(cola.cancion_actual)
         self.check_song_position()
@@ -225,6 +234,13 @@ class Reproductor:
             self.boton_siguente["state"] = "disable"
         else:
             self.boton_siguente["state"] = "normal"
+    
+    """
+    def actualizar_progeso(self):
+        progreso_actual = self.control_progreso["value"]
+
+        if progreso_actual
+    """
 
     def actualizar_cancion_actual(self):
         cola.cancion_actual = cola.cola_reproduccion[cola.posicion_actual]
