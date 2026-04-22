@@ -27,6 +27,8 @@ class Reproductor:
         cola.cola_reproduccion.extend(canciones)
         cola.cola_base.extend(canciones)
 
+        self.actualizar_datos_cola()
+
         # === FRAME DE LA CARÁTULA ===
 
         frame_caratula = ttk.Frame(mainframe, width = 500, height = 600)
@@ -51,10 +53,9 @@ class Reproductor:
         # === FRAME DE LA CARÁTULA ===
 
         # === FRAME DE LOS DETALLES ===
-
+        
         frame_detalles = ttk.Frame(mainframe, width = 300, height = 300)
         frame_detalles["padding"] = 10
-        frame_detalles["relief"] = "sunken"
         frame_detalles.grid(column = 2, row = 1)
 
         self.titulo = StringVar(value = "Titulo desconocido")
@@ -79,10 +80,14 @@ class Reproductor:
 
         frame_controles = ttk.Frame(mainframe, width = 300, height = 300)
         frame_controles["padding"] = 5
-        frame_controles["relief"] = "sunken"
         frame_controles.grid(column = 2, row = 2)
 
             # === CREACIÓN DE LOS CONTROLES ===
+
+        estilo_boton = ttk.Style()
+        estilo_boton.theme_use("alt")
+        estilo_boton.configure("TButton", background = "black", foreground = "#FAC41A")
+        estilo_boton.map("TButton", background=[('active','black')])
 
         """
         self.control_posicion = ttk.Scale(frame_controles, length = 300, from_= 0, to = 100)
@@ -129,6 +134,7 @@ class Reproductor:
         boton_abrir_carpeta["command"] = abrir_carpeta
         boton_abrir_carpeta.grid(column = 1, row = 5)
         """
+
         # === FRAME DE LOS BOTONES ===
 
         root.mainloop()
@@ -194,8 +200,6 @@ class Reproductor:
         self.actualizar_metadatos()
 
     def check_song_position(self):
-        cola.cantidad_canciones = len(cola.cola_reproduccion) - 1
-
         if cola.posicion_actual <= 0:
             self.boton_anterior["state"] = "disable"
         else:
@@ -212,30 +216,30 @@ class Reproductor:
         # === FUNCIONES DE LA COLA ===
 
     def actualizar_datos_cola(self):
-        pass
-    
+        cola.cantidad_canciones = len(cola.cola_reproduccion) - 1
+
     def aleatorizar_cola(self):
         cola.cola_reproduccion.remove(cola.cancion_actual)
         shuffle(cola.cola_reproduccion)
         cola.posicion_actual = 0
         cola.cola_reproduccion.insert(0, cola.cancion_actual)
 
-        cola.playback = cola.NORMAL
-        self.string_playback.set("⇉")
-
     def normalizar_cola(self):
         cola.cola_reproduccion = cola.cola_base.copy()
         cola.posicion_actual = cola.cola_reproduccion.index(cola.cancion_actual)
 
-        cola.playback = cola.ALEATORIO
-        self.string_playback.set("⇆")
-        
     def cambiar_playback(self):
         if cola.playback == cola.NORMAL:
             self.aleatorizar_cola()
+            cola.playback = cola.ALEATORIO
+            self.string_playback.set("⇆")
 
         elif cola.playback == cola.ALEATORIO:
             self.normalizar_cola()
+            cola.playback = cola.NORMAL
+            self.string_playback.set("⇉")
+
+        self.check_song_position()
 
         # === FUNCIONES DE LA COLA ===
 
@@ -283,7 +287,11 @@ class Reproductor:
         mixer.music.pause()
         self.estado.set("▶")
         cola.estado = cola.PAUSA
-    
+
+        # === FUNCIONES DE LOS CONTROLES DE POSICION ===
+
+        # === FUNCION DEL CONTROLADOR DE VOLUMEN ===
+
     def redondear_volumen(self, valor_volumen):
         valor_volumen = float(valor_volumen)
         volumen_redondeado = round(valor_volumen, 2)
@@ -297,7 +305,7 @@ class Reproductor:
         mixer.music.set_volume(nuevo_volumen)
         self.volumen.set(volumen_redondeado)
 
-        # === FUNCIONES DE LOS CONTROLES DE POSICION ===
+        # === FUNCIONES DEL CONTROLADOR DE VOLUMEN ===
 
     # === DEFINICIONES DE FUNCIONES ===
 Reproductor()
