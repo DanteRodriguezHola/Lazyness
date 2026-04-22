@@ -5,7 +5,7 @@ from PIL import ImageTk, Image
 from random import shuffle
 from os import system
 
-from abrir_archivos import abrir_carpeta, abrir_playlist, leer_playlist
+from abrir_archivos import abrir_ruta_carpeta, abrir_rutas_archivos, abrir_ruta_playlist, leer_playlist
 from cola import mixer
 
 import caratula
@@ -21,10 +21,6 @@ class Reproductor:
         mainframe = ttk.Frame(root, width = 800, height = 600)
         mainframe["padding"] = 10
         mainframe.grid(column = 1, row = 1)
-        
-        canciones = abrir_carpeta()
-
-        self.actualizar_datos_cola()
 
         # === DEFINICION DE LOS ESTILOS ===
 
@@ -151,14 +147,15 @@ class Reproductor:
         frame_controles_cola.grid(column = 2, row = 3)
 
         self.boton_abrir_carpeta = ttk.Button(frame_controles_cola, text = "Abrir carpeta")
-        self.boton_abrir_carpeta["command"] = self.añadir_desde_carpeta
+        self.boton_abrir_carpeta["command"] = self.abrir_desde_carpeta
         self.boton_abrir_carpeta.grid(column = 1, row = 1)
 
         self.boton_abrir_archivos = ttk.Button(frame_controles_cola, text = "Abrir archivos")
+        self.boton_abrir_archivos["command"] = self.abrir_desde_archivos
         self.boton_abrir_archivos.grid(column = 2, row = 1)
 
         self.boton_abrir_playlist = ttk.Button(frame_controles_cola, text = "Abrir playlist")
-        self.boton_abrir_playlist["command"] = self.añadir_desde_playlist
+        self.boton_abrir_playlist["command"] = self.abrir_desde_playlist
         self.boton_abrir_playlist.grid(column = 1, row = 3)
 
         # === FRAME DE LOS BOTONES ===
@@ -213,10 +210,10 @@ class Reproductor:
     """
     
         # === FUNCIONES DE LOS METADATOS Y LAS CARATULAS ===
-    
-    def anadir_cancion_playlist(self):
-        ruta_playlist = abrir_playlist()
 
+    def anadir_cancion_playlist(self):
+        ruta_playlist = abrir_ruta_playlist()
+        
         with open(ruta_playlist, "a") as playlist:
             ruta_cancion = "\n" + cola.cancion_actual
             playlist.write(ruta_cancion)
@@ -260,21 +257,24 @@ class Reproductor:
     def actualizar_cancion_actual(self):
         cola.cancion_actual = cola.cola_reproduccion[cola.posicion_actual]
 
-    def añadir_desde_carpeta(self):
-        canciones = abrir_carpeta()
+        # === ABRIR DESDE ===
+ 
+    def abrir_desde_carpeta(self):
+        canciones = abrir_ruta_carpeta()
 
-        cola.cola_base = canciones
-        cola.cola_reproduccion = canciones
+        self.empezar_nueva_cola(canciones)
 
-        self.empezar_nueva_cola()
+    def abrir_desde_archivos(self):
+        canciones = abrir_rutas_archivos()
 
-    def añadir_desde_playlist(self):
+        self.empezar_nueva_cola(canciones)
+
+    def abrir_desde_playlist(self):
         canciones = leer_playlist()
 
-        cola.cola_base = canciones
-        cola.cola_reproduccion = canciones
+        self.empezar_nueva_cola(canciones)
 
-        self.empezar_nueva_cola()
+        # === ABRIR DESDE === 
 
         # === FUNCIONES DE LA COLA ===
 
@@ -309,7 +309,10 @@ class Reproductor:
         cola.posicion_actual = 0
         cola.cancion_actual = cola.cola_reproduccion[cola.posicion_actual]
 
-    def empezar_nueva_cola(self):
+    def empezar_nueva_cola(self, nuevas_canciones):
+        cola.cola_base = nuevas_canciones
+        cola.cola_reproduccion = nuevas_canciones
+
         self.reiniciar_datos_cola()
 
         self.cargar_cancion()
