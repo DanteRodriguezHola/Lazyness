@@ -145,7 +145,7 @@ class Reproductor:
         frame_controles_cola.grid(column = 2, row = 3)
 
         self.boton_abrir_carpeta = ttk.Button(frame_controles_cola, text = "Abrir carpeta")
-        self.boton_abrir_carpeta["command"] = abrir_carpeta
+        self.boton_abrir_carpeta["command"] = self.añadir_desde_carpeta
         self.boton_abrir_carpeta.grid(column = 1, row = 1)
 
         self.boton_abrir_archivos = ttk.Button(frame_controles_cola, text = "Abrir archivos")
@@ -245,6 +245,14 @@ class Reproductor:
     def actualizar_cancion_actual(self):
         cola.cancion_actual = cola.cola_reproduccion[cola.posicion_actual]
 
+    def añadir_desde_carpeta(self):
+        canciones = abrir_carpeta()
+
+        cola.cola_base = canciones
+        cola.cola_reproduccion = canciones
+
+        self.actualizar_datos_cola()
+        cola.posicion_actual = 0
         # === FUNCIONES DE LA COLA ===
 
     def actualizar_datos_cola(self):

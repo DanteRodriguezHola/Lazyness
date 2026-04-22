@@ -48,5 +48,4 @@ def abrir_carpeta():
     carpeta = filedialog.askdirectory()
     canciones = examinar_carpetas(carpeta)
 
-    cola.cola_base = canciones
-    cola.cola_reproduccion = canciones
+    return canciones
