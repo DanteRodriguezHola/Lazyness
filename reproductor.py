@@ -5,7 +5,7 @@ from PIL import ImageTk, Image
 from random import shuffle
 from os import system
 
-from abrir_archivos import abrir_carpeta
+from abrir_archivos import abrir_carpeta, abrir_playlist, leer_playlist
 from cola import mixer
 
 import caratula
@@ -104,7 +104,7 @@ class Reproductor:
         self.control_progreso = ttk.Progressbar(frame_controles_reproduccion, length = 180, orient = "horizontal")
         self.control_progreso.grid(column = 1, columnspan = 4, row = 2)
         """
-        
+
         self.anadir_playlist = ttk.Button(frame_controles_reproduccion, text = "+", width = 4)
         self.anadir_playlist.grid(column = 1, row = 1)
 
@@ -213,7 +213,14 @@ class Reproductor:
     """
     
         # === FUNCIONES DE LOS METADATOS Y LAS CARATULAS ===
-        
+    
+    def añadir_playlist(self):
+        ruta_playlist = abrir_playlist()
+
+        with open(ruta_playlist, "a") as playlist:
+            ruta_cancion = "\n" + cola.cancion_actual
+            playlist.write(ruta_cancion)
+            
     def reproducir_cancion(self):
         mixer.music.play()
         self.boton_detener["state"] = "normal"

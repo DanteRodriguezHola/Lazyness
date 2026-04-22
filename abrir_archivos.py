@@ -73,6 +73,10 @@ def abrir_playlist():
     formatos = "*.m3u *.m3u8"
 
     ruta_playlist = filedialog.askopenfilename(title = "Seleccione una playlist", filetypes = [("Playlists", formatos)])
+    return ruta_playlist
+
+def leer_playlist():
+    ruta_playlist = abrir_playlist
     canciones = examinar_playlist(ruta_playlist)
 
     return canciones
