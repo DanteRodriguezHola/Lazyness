@@ -76,5 +76,3 @@ def abrir_playlist():
     canciones = examinar_playlist(ruta_playlist)
 
     return canciones
-
-abrir_playlist()

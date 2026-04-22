@@ -99,9 +99,14 @@ class Reproductor:
         frame_controles_reproduccion.grid(column = 2, row = 2)
 
             # === CREACIÓN DE LOS CONTROLES DE REPRODUCCION ===
-
+        
+        """
         self.control_progreso = ttk.Progressbar(frame_controles_reproduccion, length = 180, orient = "horizontal")
         self.control_progreso.grid(column = 1, columnspan = 4, row = 2)
+        """
+        
+        self.anadir_playlist = ttk.Button(frame_controles_reproduccion, text = "+", width = 4)
+        self.anadir_playlist.grid(column = 1, row = 1)
 
         self.string_playback = StringVar(value = "⇉")
         self.boton_playback = ttk.Button(frame_controles_reproduccion, textvariable = self.string_playback, width = 4)
@@ -150,6 +155,9 @@ class Reproductor:
 
         self.boton_abrir_archivos = ttk.Button(frame_controles_cola, text = "Abrir archivos")
         self.boton_abrir_archivos.grid(column = 2, row = 1)
+
+        self.boton_abrir_carpeta = ttk.Button(frame_controles_cola, text = "Abrir playlist")
+        self.boton_abrir_carpeta.grid(column = 1, row = 3)
 
         # === FRAME DE LOS BOTONES ===
 
