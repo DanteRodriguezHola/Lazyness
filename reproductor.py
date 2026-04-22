@@ -2,6 +2,8 @@ from tkinter import *
 from tkinter import ttk
 from tinytag import TinyTag
 from PIL import ImageTk, Image
+from random import shuffle
+from os import system
 
 from abrir_carpeta import abrir_carpeta
 from cola import mixer
@@ -23,6 +25,7 @@ class Reproductor:
         canciones = abrir_carpeta()
 
         cola.cola_reproduccion.extend(canciones)
+        cola.cola_base.extend(canciones)
 
         # === FRAME DE LA CARÁTULA ===
 
@@ -192,14 +195,29 @@ class Reproductor:
     def actualizar_cancion_actual(self):
         cola.cancion_actual = cola.cola_reproduccion[cola.posicion_actual]
     
-    def aleatorizar_cola(self):
-        pass
+    def mostrar_cola(self):
+        system("cls")
 
+        print("cola reproduccion:")
+        for cancion in cola.cola_reproduccion:
+            print(cancion)
+
+        print("\ncola base:")
+        for cancion in cola.cola_base:
+            print(cancion)
+
+    def aleatorizar_cola(self):
+        cola.cola_reproduccion.remove(cola.cancion_actual)
+        shuffle(cola.cola_reproduccion)
+        cola.cola_reproduccion.insert(0, cola.cancion_actual)
+        
     def normalizar_cola(self):
         cola.cola_reproduccion = cola.cola_base
+        cola.posicion_actual = cola.cola_reproduccion.index(cola.cancion_actual)
 
     def cambiar_playback(self):
         if cola.playback == cola.NORMAL:
+            self.aleatorizar_cola()
             cola.playback = cola.ALEATORIO
             self.string_playback.set("⇆")
 
