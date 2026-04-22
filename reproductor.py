@@ -212,7 +212,7 @@ class Reproductor:
         cola.cola_reproduccion.insert(0, cola.cancion_actual)
         
     def normalizar_cola(self):
-        cola.cola_reproduccion = cola.cola_base
+        cola.cola_reproduccion = cola.cola_base.copy()
         cola.posicion_actual = cola.cola_reproduccion.index(cola.cancion_actual)
 
     def cambiar_playback(self):
