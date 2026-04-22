@@ -278,8 +278,23 @@ class Reproductor:
 
         # === FUNCIONES DE LA COLA ===
 
-    def actualizar_datos_cola(self):
+    def reiniciar_datos_cola(self):
         cola.cantidad_canciones = len(cola.cola_reproduccion) - 1
+        cola.posicion_actual = 0
+        cola.cancion_actual = cola.cola_reproduccion[cola.posicion_actual]
+
+    def empezar_nueva_cola(self, nuevas_canciones):
+        cola.cola_base = nuevas_canciones
+        cola.cola_reproduccion = nuevas_canciones
+
+        self.reiniciar_datos_cola()
+
+        self.cargar_cancion()
+        self.reproducir_cancion()
+
+        # === FUNCIONES DE LA COLA ===
+
+        # === FUNCIONES DEL PLAYBACK ===
 
     def aleatorizar_cola(self):
         cola.cola_reproduccion.remove(cola.cancion_actual)
@@ -304,21 +319,7 @@ class Reproductor:
 
         self.check_song_position()
 
-    def reiniciar_datos_cola(self):
-        cola.cantidad_canciones = len(cola.cola_reproduccion)
-        cola.posicion_actual = 0
-        cola.cancion_actual = cola.cola_reproduccion[cola.posicion_actual]
-
-    def empezar_nueva_cola(self, nuevas_canciones):
-        cola.cola_base = nuevas_canciones
-        cola.cola_reproduccion = nuevas_canciones
-
-        self.reiniciar_datos_cola()
-
-        self.cargar_cancion()
-        self.reproducir_cancion()
-
-        # === FUNCIONES DE LA COLA ===
+        # === FUNCIONES DEL PLAYBACK ===
 
         # === FUNCIONES DE LOS CONTROLES DE POSICION ===
 
@@ -385,4 +386,5 @@ class Reproductor:
         # === FUNCIONES DEL CONTROLADOR DE VOLUMEN ===
 
     # === DEFINICIONES DE FUNCIONES ===
+    
 Reproductor()
