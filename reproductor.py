@@ -105,8 +105,9 @@ class Reproductor:
         self.control_progreso.grid(column = 1, columnspan = 4, row = 2)
         """
 
-        self.anadir_playlist = ttk.Button(frame_controles_reproduccion, text = "+", width = 4)
-        self.anadir_playlist.grid(column = 1, row = 1)
+        self.boton_anadir_playlist = ttk.Button(frame_controles_reproduccion, text = "+", width = 4)
+        self.boton_anadir_playlist["command"] = self.anadir_cancion_playlist
+        self.boton_anadir_playlist.grid(column = 1, row = 1)
 
         self.string_playback = StringVar(value = "⇉")
         self.boton_playback = ttk.Button(frame_controles_reproduccion, textvariable = self.string_playback, width = 4)
@@ -175,20 +176,18 @@ class Reproductor:
         self.album.set(metadatos.album)
         self.actualizar_caratula()
     
-    """
-    def actualizar_datos_caratula(self):
-        caratula.caratulas = caratula.obtener_caratulas()
-        caratula.cantidad_caratulas = len(caratula.caratulas) - 1
-        caratula.posicial_actual = 0
-    """
-    
     def actualizar_caratula(self):        
         imagen_caratula = caratula.obtener_imagen_caratula()
 
         self.caratula = ImageTk.PhotoImage(imagen_caratula)
         self.label_caratula.configure(image = self.caratula)
-        
+    
     """
+    def actualizar_datos_caratula(self):
+        caratula.caratulas = caratula.obtener_caratulas()
+        caratula.cantidad_caratulas = len(caratula.caratulas) - 1
+        caratula.posicial_actual = 0
+
     def anterior_caratula(self):
         if caratula.posicion_actual <= 0:
             return
@@ -214,13 +213,13 @@ class Reproductor:
     
         # === FUNCIONES DE LOS METADATOS Y LAS CARATULAS ===
     
-    def añadir_playlist(self):
+    def anadir_cancion_playlist(self):
         ruta_playlist = abrir_playlist()
 
         with open(ruta_playlist, "a") as playlist:
             ruta_cancion = "\n" + cola.cancion_actual
             playlist.write(ruta_cancion)
-            
+
     def reproducir_cancion(self):
         mixer.music.play()
         self.boton_detener["state"] = "normal"
