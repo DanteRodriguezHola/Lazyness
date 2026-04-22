@@ -49,3 +49,32 @@ def abrir_carpeta():
     canciones = examinar_carpetas(carpeta)
 
     return canciones
+
+def examinar_playlist(ruta_playlist):
+    canciones = []
+
+    with open(ruta_playlist, "r") as playlist:
+        contenido = playlist.readlines()
+
+        for elemento in contenido:
+            elemento_limpio = elemento.rstrip("\n")
+
+            if not path.exists(elemento_limpio):
+                continue
+            
+            if not es_audio(elemento_limpio):
+                continue
+
+            canciones.append(elemento_limpio)
+
+    return canciones
+
+def abrir_playlist():
+    formatos = "*.m3u *.m3u8"
+
+    ruta_playlist = filedialog.askopenfilename(title = "Seleccione una playlist", filetypes = [("Playlists", formatos)])
+    canciones = examinar_playlist(ruta_playlist)
+
+    return canciones
+
+abrir_playlist()

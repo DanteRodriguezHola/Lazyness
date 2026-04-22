@@ -5,7 +5,7 @@ from PIL import ImageTk, Image
 from random import shuffle
 from os import system
 
-from abrir_carpeta import abrir_carpeta
+from abrir_archivos import abrir_carpeta
 from cola import mixer
 
 import caratula
