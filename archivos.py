@@ -49,10 +49,22 @@ def examinar_carpetas(carpeta_padre):
     return canciones_total
         
 def abrir_ruta_carpeta():
-    carpeta = filedialog.askdirectory()
-    canciones = examinar_carpetas(carpeta)
+     # === CONFIGURACIONES DE LA VENTANA ===
 
-    return canciones
+    titulo_ventana = "Seleccionar una carpeta"
+    carpeta_default = path.expanduser("~/Music")
+
+     # === CONFIGURACIONES DE LA VENTANA ===
+
+    ruta_carpeta = filedialog.askdirectory(title = titulo_ventana, initialdir = carpeta_default)
+
+    if ruta_carpeta:
+        canciones = examinar_carpetas(ruta_carpeta)
+
+        return canciones
+    
+    else:
+        return None
 
 # === CARPETAS ===
 
@@ -68,13 +80,13 @@ def examinar_archivos(ruta_archivos):
     return canciones
 
 def abrir_rutas_archivos():
-    # === DETALLES DE LA VENTANA ===
+    # === CONFIGURACIONES DE LA VENTANA ===
 
-    titulo_ventana = "Selecciones archivos de audio"
+    titulo_ventana = "Seleccionar archivos de audio"
     carpeta_default = path.expanduser("~/Music")
     formatos_audio = [("Archivos de audio", "*.mp3 .flac"), ("Todos los archivos", "*.*")]
 
-    # === DETALLES DE LA VENTANA
+    # === CONFIGURACIONES DE LA VENTANA
 
     rutas_archivos = filedialog.askopenfilenames(title = titulo_ventana, initialdir = carpeta_default, filetypes = formatos_audio)
     
@@ -91,13 +103,13 @@ def abrir_rutas_archivos():
 # === PLAYLISTS ===
 
 def abrir_ruta_playlist():
-    # === DETALLES DE LA VENTANA ===
+    # === CONFIGURACIONES DE LA VENTANA ===
 
-    titulo_ventana = "Seleccione una playlist"
+    titulo_ventana = "Seleccionar una playlist"
     carpeta_default = path.expanduser("~/Music")
     formatos_playlist = [("Playlist", "*.m3u .m3u8")]
 
-    # === DETALLES DE LA VENTANA ===
+    # === CONFIGURACIONES DE LA VENTANA ===
 
     ruta_playlist = filedialog.askopenfilename(title = titulo_ventana, initialdir = carpeta_default, filetypes = formatos_playlist)
     
@@ -135,7 +147,7 @@ def leer_playlist():
         return None
 
 def crear_playlist():
-    # === DETALLES DE LA VENTANA ===
+    # === CONFIGURACIONES DE LA VENTANA ===
 
     titulo_ventana = "Crear playlist"
     formato_default = ".m3u8"
@@ -143,7 +155,7 @@ def crear_playlist():
     carpeta_default = path.expanduser("~/Music")
     formatos_playlist = [("MPEG 3.0 URL codificado en UTF-8", "*.m3u8"), ("MPEG 3.0 URL", "*.m3u")]
 
-    # === DETALLES DE LA VENTANA ===
+    # === CONFIGURACIONES DE LA VENTANA ===
 
     ruta_nueva_playlist = filedialog.asksaveasfilename(title = titulo_ventana, defaultextension = formato_default, initialfile = nombre_default, initialdir = carpeta_default, filetypes = formatos_playlist)
 
@@ -153,5 +165,9 @@ def crear_playlist():
         with open(ruta_nueva_playlist, "w") as playlist:
             playlist.write(f"#EXTINF {titulo_playlist}")
 
-abrir_rutas_archivos()
 # === PLAYLISTS ===
+
+abrir_ruta_carpeta()
+abrir_rutas_archivos()
+leer_playlist()
+crear_playlist()
