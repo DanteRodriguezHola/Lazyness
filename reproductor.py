@@ -112,6 +112,11 @@ class Reproductor:
         self.boton_anadir_playlist["command"] = self.anadir_cancion_playlist
         self.boton_anadir_playlist.grid(column = 1, row = 1)
 
+        self.string_tipo_repeticion = StringVar(value = "→")
+        self.boton_cambiar_repeticion = ttk.Button(frame_controles_reproduccion, textvariable = self.string_tipo_repeticion, width = 4)
+        self.boton_cambiar_repeticion["command"] = self.cambiar_tipo_repeticion
+        self.boton_cambiar_repeticion.grid(column = 3, row = 1)
+
         self.string_playback = StringVar(value = "⇉")
         self.boton_playback = ttk.Button(frame_controles_reproduccion, textvariable = self.string_playback, width = 4)
         self.boton_playback["command"] = self.cambiar_playback
@@ -269,7 +274,7 @@ class Reproductor:
         mixer.music.stop()
 
         self.string_playback.set("⇉")
-        cola.playback = cola.NORMAL
+        cola.playback = cola.ORDENADO
 
         self.deshabilitar_controles_posicion()
         cola.cancion_actual = None
@@ -340,11 +345,11 @@ class Reproductor:
 
         # === FUNCIONES DE LA COLA ===
 
-    def mostrar_nuevas_canciones(self, canciones):
+    def mostrar_nuevas_canciones(self, canciones): # === PARA DEBUGGING ===
         for cancion in canciones:
             print(cancion)
 
-    def mostrar_cola(self):
+    def mostrar_cola(self): # === PARA DEBUGGING ===
         system("cls")
 
         print("Cola base:")
@@ -365,7 +370,7 @@ class Reproductor:
         cola.cancion_actual = cola.cola_reproduccion[cola.posicion_actual]
 
     def anadir_a_cola(self, nuevas_canciones):
-        self.mostrar_nuevas_canciones(nuevas_canciones)
+        # self.mostrar_nuevas_canciones(nuevas_canciones)
 
         if cola.cola_reproduccion:
             cola.cola_base.extend(nuevas_canciones)
@@ -406,19 +411,32 @@ class Reproductor:
         cola.posicion_actual = cola.cola_reproduccion.index(cola.cancion_actual)
 
     def cambiar_playback(self):
-        if cola.playback == cola.NORMAL:
+        if cola.playback == cola.ORDENADO:
             self.aleatorizar_cola()
             cola.playback = cola.ALEATORIO
             self.string_playback.set("⇄")
 
         elif cola.playback == cola.ALEATORIO:
             self.normalizar_cola()
-            cola.playback = cola.NORMAL
+            cola.playback = cola.ORDENADO
             self.string_playback.set("⇉")
 
         self.comprobar_posicion_cancion()
 
         # === FUNCIONES DEL PLAYBACK ===
+
+        # === FUNCIONES DEL TIPO DE REPETICIÓN ===
+
+    def cambiar_tipo_repeticion(self):
+        if cola.tipo_repeticion == cola.LINEAL:
+            self.string_tipo_repeticion.set("↺")
+            cola.tipo_repeticion = cola.BUCLE
+
+        elif cola.tipo_repeticion == cola.BUCLE:
+            self.string_tipo_repeticion.set("→")
+            cola.tipo_repeticion = cola.LINEAL
+
+        # === FUNCIONES DEL TIPO DE REPETICIÓN  ===
 
         # === FUNCIONES DE LOS CONTROLES DE POSICION ===
 
