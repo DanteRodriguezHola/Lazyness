@@ -146,17 +146,20 @@ class Reproductor:
         frame_controles_cola["padding"] = 5
         frame_controles_cola.grid(column = 2, row = 3)
 
-        self.boton_abrir_carpeta = ttk.Button(frame_controles_cola, text = "Abrir carpeta")
+        self.boton_abrir_carpeta = ttk.Button(frame_controles_cola, text = "Abrir carpeta", width = 13)
         self.boton_abrir_carpeta["command"] = self.abrir_desde_carpeta
         self.boton_abrir_carpeta.grid(column = 1, row = 1)
 
-        self.boton_abrir_archivos = ttk.Button(frame_controles_cola, text = "Abrir archivos")
+        self.boton_abrir_archivos = ttk.Button(frame_controles_cola, text = "Abrir archivos", width = 13)
         self.boton_abrir_archivos["command"] = self.abrir_desde_archivos
         self.boton_abrir_archivos.grid(column = 2, row = 1)
 
-        self.boton_abrir_playlist = ttk.Button(frame_controles_cola, text = "Abrir playlist")
+        self.boton_abrir_playlist = ttk.Button(frame_controles_cola, text = "Abrir playlist", width = 13)
         self.boton_abrir_playlist["command"] = self.abrir_desde_playlist
-        self.boton_abrir_playlist.grid(column = 1, row = 3)
+        self.boton_abrir_playlist.grid(column = 1, row = 2)
+
+        self.boton_crear_playlist = ttk.Button(frame_controles_cola, text = "Crear playlist", width = 13)
+        self.boton_crear_playlist.grid(column = 2, row = 2)
 
         # === FRAME DE LOS BOTONES ===
 
