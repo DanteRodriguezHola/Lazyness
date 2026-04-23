@@ -259,7 +259,7 @@ class Reproductor:
 
         self.string_playback.set("⇉")
         cola.playback = cola.NORMAL
-        
+
         self.deshabilitar_controles_posicion()
         cola.cancion_actual = None
         self.actualizar_metadatos()
@@ -283,8 +283,8 @@ class Reproductor:
         self.actualizar_metadatos()
 
     def comprobar_posicion_cancion(self):
-        es_primera_cancion = (cola.posicion_actual <= 0)
-        es_ultima_cancion = (cola.posicion_actual >= cola.cantidad_canciones)
+        es_primera_cancion = cola.posicion_actual <= 0
+        es_ultima_cancion = cola.posicion_actual >= cola.cantidad_canciones
 
         if es_primera_cancion:
             self.boton_anterior["state"] = "disable"
@@ -368,10 +368,11 @@ class Reproductor:
             cola.cola_reproduccion.extend(nuevas_canciones)
 
             self.reiniciar_datos_cola()
-
+    
             self.cargar_cancion()
             self.reproducir_cancion()
             self.habilitar_controles_posicion()
+            
 
     def borrar_cola(self):
         cola.cola_base.clear()
@@ -411,12 +412,12 @@ class Reproductor:
         # === FUNCIONES DE LOS CONTROLES DE POSICION ===
 
     def habilitar_controles_posicion(self):
+        self.comprobar_posicion_cancion()
+
         self.boton_anadir_playlist["state"] = "normal"
         self.boton_playback["state"] = "normal"
-        self.boton_anterior["state"] = "normal"
         self.boton_estado["state"] = "normal"
         self.boton_detener["state"] = "normal"
-        self.boton_siguente["state"] = "normal"
 
         self.boton_borrar_cola["state"] = "normal"
 
