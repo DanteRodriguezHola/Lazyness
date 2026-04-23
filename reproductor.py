@@ -1,13 +1,13 @@
 from tkinter import *
 from tkinter import ttk
-from tinytag import TinyTag
-from PIL import ImageTk, Image
-from random import shuffle
+
 from os import system
+from PIL import ImageTk
+from pygame import mixer
+from random import shuffle
+from tinytag import TinyTag
 
 from archivos import abrir_ruta_carpeta, abrir_rutas_archivos, abrir_ruta_playlist, leer_playlist, crear_playlist
-from cola import mixer
-
 import caratula
 import cola
 
@@ -22,6 +22,7 @@ class Reproductor:
         mainframe["padding"] = 10
         mainframe.grid(column = 1, row = 1)
 
+        mixer
         # === DEFINICION DE LOS ESTILOS ===
 
         tema = "clam"
@@ -191,22 +192,31 @@ class Reproductor:
         else:
             metadatos = TinyTag.get(cola.cancion_actual)
 
-            if metadatos.title:
-                self.titulo.set(metadatos.title)
-            else:
-                self.titulo.set("Titulo desconocido")
-
-            if metadatos.artist:
-                self.artista.set(metadatos.artist)
-            else:
-                self.artista.set("Artista desconocido")
-
-            if metadatos.album:
-                self.album.set(metadatos.album)
-            else:
-                self.album.set("Álbum desconocido")
-
+            self.actualizar_titulo(metadatos.title)
+            self.actualizar_artista(metadatos.artist)
+            self.actualizar_album(metadatos.album)
             self.actualizar_caratula()
+
+    def actualizar_titulo(self, titulo):
+        if titulo:
+            self.titulo.set(titulo)
+
+        else:
+            self.titulo.set("Titulo desconocido")
+
+    def actualizar_artista(self, artista):
+        if artista:
+            self.artista.set(artista)
+
+        else:
+            self.titulo.set("Artista desconocido")
+
+    def actualizar_album(self, album):
+        if album:
+            self.album.set(album)
+
+        else:
+            self.album.set("Álbum desconocido")
     
     def actualizar_caratula(self):        
         imagen_caratula = caratula.obtener_imagen_caratula()

@@ -8,6 +8,7 @@ PAUSA = True
 NORMAL = False
 ALEATORIO = True
 
+
 cola_base = []
 cola_reproduccion = []
 
@@ -17,3 +18,4 @@ cantidad_canciones = len(cola_reproduccion) - 1
 
 estado = REPRODUCCION
 playback = NORMAL
+bucle = True
