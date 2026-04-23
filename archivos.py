@@ -166,8 +166,3 @@ def crear_playlist():
             playlist.write(f"#EXTINF {titulo_playlist}")
 
 # === PLAYLISTS ===
-
-abrir_ruta_carpeta()
-abrir_rutas_archivos()
-leer_playlist()
-crear_playlist()

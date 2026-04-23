@@ -15,10 +15,10 @@ class Reproductor:
     def __init__(self):
         root = Tk()
         root.title("Rogilla")
-        root.geometry("800x600")
+        root.geometry("800x523")
         root.resizable(False, False)
 
-        mainframe = ttk.Frame(root, width = 800, height = 600)
+        mainframe = ttk.Frame(root, width = 800, height = 523)
         mainframe["padding"] = 10
         mainframe.grid(column = 1, row = 1)
 
@@ -37,14 +37,19 @@ class Reproductor:
         estilo_boton = ttk.Style()
         estilo_boton.theme_use(tema)
         estilo_boton.configure("TButton", background = "black", foreground = "#FAC41A")
-        estilo_boton.map("TButton", background=[('active','black')])
+        estilo_boton.map("TButton", background = [("active", "#FAC41A")], foreground = [("active","black"), ("disabled", "#7F7F7F")])
+
+        estilo_scale = ttk.Style()
+        estilo_scale.theme_use(tema)
+        estilo_scale.configure("TScale", background = "black", foreground = "black")
+        estilo_scale.map("TScale", background = [('active','#FAC41A')])
 
         # === DEFINICION DE LOS ESTILOS ===
 
         # === FRAME DE LA CARÁTULA ===
 
-        frame_caratula = ttk.Frame(mainframe, width = 500, height = 600)
-        frame_caratula.grid(column = 1, row = 1, rowspan = 2)
+        frame_caratula = ttk.Frame(mainframe, width = 500, height = 523)
+        frame_caratula.grid(column = 1, row = 1, rowspan = 3)
 
         nombre_caratula = "default.png"
         
@@ -66,7 +71,7 @@ class Reproductor:
 
         # === FRAME DE LOS DETALLES ===
         
-        frame_detalles = ttk.Frame(mainframe, width = 200, height = 200)
+        frame_detalles = ttk.Frame(mainframe, width = 300, height = 174)
         frame_detalles["padding"] = 10
         frame_detalles.grid(column = 2, row = 1)
 
@@ -90,7 +95,7 @@ class Reproductor:
 
         # === FRAME DE LOS CONTROLES ===
 
-        frame_controles_reproduccion = ttk.Frame(mainframe, width = 200, height = 200)
+        frame_controles_reproduccion = ttk.Frame(mainframe, width = 300, height = 174)
         frame_controles_reproduccion["padding"] = 5
         frame_controles_reproduccion.grid(column = 2, row = 2)
 
@@ -142,7 +147,7 @@ class Reproductor:
 
         # === FRAME DE LOS CONTROLES DE COLA ===
 
-        frame_controles_cola = ttk.Frame(mainframe, width = 200, height = 200)
+        frame_controles_cola = ttk.Frame(mainframe, width = 300, height = 174)
         frame_controles_cola["padding"] = 5
         frame_controles_cola.grid(column = 2, row = 3)
 
@@ -314,7 +319,7 @@ class Reproductor:
         if cola.playback == cola.NORMAL:
             self.aleatorizar_cola()
             cola.playback = cola.ALEATORIO
-            self.string_playback.set("⇆")
+            self.string_playback.set("⇄")
 
         elif cola.playback == cola.ALEATORIO:
             self.normalizar_cola()
