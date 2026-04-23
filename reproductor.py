@@ -274,7 +274,7 @@ class Reproductor:
         mixer.music.stop()
 
         self.string_playback.set("⇉")
-        cola.playback = cola.ORDENADO
+        cola.tipo_playback = cola.ORDENADO
 
         self.deshabilitar_controles_posicion()
         cola.cancion_actual = None
@@ -299,14 +299,16 @@ class Reproductor:
         self.actualizar_metadatos()
 
     def comprobar_posicion_cancion(self):
-        if cola.tipo_repeticion == cola.BUCLE:
+        cola_vacia = cola.cantidad_canciones == 0
+
+        if cola.tipo_repeticion == cola.BUCLE and not cola_vacia:
             self.boton_anterior["state"] = "normal"
             self.boton_siguente["state"] = "normal"
 
             return
         
         es_primera_cancion = cola.posicion_actual <= 0
-        es_ultima_cancion = cola.posicion_actual >= cola.cantidad_canciones
+        es_ultima_cancion = cola.posicion_actual >= cola.cantidad_indices
 
         if es_primera_cancion:
             self.boton_anterior["state"] = "disable"
@@ -367,25 +369,22 @@ class Reproductor:
             print(cancion)
 
     def actualizar_datos_cola(self):
-        cola.cantidad_canciones = len(cola.cola_reproduccion) - 1
+        cola.cantidad_canciones = len(cola.cola_reproduccion)
+        cola.cantidad_indices = len(cola.cola_reproduccion) - 1
         cola.cancion_actual = cola.cola_reproduccion[cola.posicion_actual]
         
     def reiniciar_datos_cola(self):
-        cola.cantidad_canciones = len(cola.cola_reproduccion) - 1
+        cola.cantidad_canciones = len(cola.cola_reproduccion)
+        cola.cantidad_indices = len(cola.cola_reproduccion) - 1
         cola.posicion_actual = 0
         cola.cancion_actual = cola.cola_reproduccion[cola.posicion_actual]
 
     def anadir_a_cola(self, nuevas_canciones):
+        cola_vacia = cola.cantidad_canciones == 0
+
         # self.mostrar_nuevas_canciones(nuevas_canciones)
 
-        if cola.cola_reproduccion:
-            cola.cola_base.extend(nuevas_canciones)
-            cola.cola_reproduccion.extend(nuevas_canciones)
-
-            self.actualizar_datos_cola()
-            self.comprobar_posicion_cancion()
-        
-        else:
+        if cola_vacia:
             cola.cola_base.extend(nuevas_canciones)
             cola.cola_reproduccion.extend(nuevas_canciones)
 
@@ -394,8 +393,14 @@ class Reproductor:
             self.cargar_cancion()
             self.reproducir_cancion()
             self.habilitar_controles_posicion()
-            
+        
+        else:
+            cola.cola_base.extend(nuevas_canciones)
+            cola.cola_reproduccion.extend(nuevas_canciones)
 
+            self.actualizar_datos_cola()
+            self.comprobar_posicion_cancion()
+            
     def borrar_cola(self):
         cola.cola_base.clear()
         cola.cola_reproduccion.clear()
@@ -417,14 +422,14 @@ class Reproductor:
         cola.posicion_actual = cola.cola_reproduccion.index(cola.cancion_actual)
 
     def cambiar_playback(self):
-        if cola.playback == cola.ORDENADO:
+        if cola.tipo_playback == cola.ORDENADO:
             self.aleatorizar_cola()
-            cola.playback = cola.ALEATORIO
+            cola.tipo_playback = cola.ALEATORIO
             self.string_playback.set("⇄")
 
-        elif cola.playback == cola.ALEATORIO:
+        elif cola.tipo_playback == cola.ALEATORIO:
             self.normalizar_cola()
-            cola.playback = cola.ORDENADO
+            cola.tipo_playback = cola.ORDENADO
             self.string_playback.set("⇉")
 
         self.comprobar_posicion_cancion()
@@ -469,12 +474,10 @@ class Reproductor:
         self.boton_borrar_cola["state"] = "disabled"
 
     def anterior_cancion(self):
-        self.comprobar_posicion_cancion()
-
         es_primera_cancion = cola.posicion_actual <= 0
 
         if es_primera_cancion and cola.tipo_repeticion == cola.BUCLE:
-            cola.posicion_actual = cola.cantidad_canciones
+            cola.posicion_actual = cola.cantidad_indices
         
         else:
             cola.posicion_actual -= 1
@@ -486,9 +489,7 @@ class Reproductor:
             self.reproducir_cancion()
 
     def siguente_cancion(self):
-        self.comprobar_posicion_cancion()
-
-        es_ultima_cancion = cola.posicion_actual >= cola.cantidad_canciones
+        es_ultima_cancion = cola.posicion_actual >= cola.cantidad_indices
         
         if es_ultima_cancion and cola.tipo_repeticion == cola.BUCLE:
             cola.posicion_actual = 0
