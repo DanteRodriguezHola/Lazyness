@@ -254,16 +254,19 @@ class Reproductor:
 
     def cargar_cancion(self):
         mixer.music.load(cola.cancion_actual)
-        self.check_song_position()
+        self.comprobar_posicion_cancion()
         self.actualizar_metadatos()
 
     def comprobar_posicion_cancion(self):
-        if cola.posicion_actual <= 0:
+        es_primera_cancion = (cola.posicion_actual <= 0)
+        es_ultima_cancion = (cola.posicion_actual >= cola.cantidad_canciones)
+
+        if es_primera_cancion:
             self.boton_anterior["state"] = "disable"
         else:
             self.boton_anterior["state"] = "normal"
 
-        if cola.posicion_actual >= cola.cantidad_canciones:
+        if es_ultima_cancion:
             self.boton_siguente["state"] = "disable"
         else:
             self.boton_siguente["state"] = "normal"
@@ -338,7 +341,7 @@ class Reproductor:
             cola.playback = cola.NORMAL
             self.string_playback.set("⇉")
 
-        self.check_song_position()
+        self.comprobar_posicion_cancion()
 
         # === FUNCIONES DEL PLAYBACK ===
 
