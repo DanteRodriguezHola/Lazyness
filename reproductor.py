@@ -173,6 +173,8 @@ class Reproductor:
 
         # === FRAME DE LOS BOTONES ===
 
+        self.deshabilitar_controles_posicion()
+
         root.mainloop()
     
     # === DEFINICIONES DE FUNCIONES ===
@@ -180,24 +182,31 @@ class Reproductor:
         # === FUNCIONES DE LOS METADATOS Y LAS CARATULAS ===
         
     def actualizar_metadatos(self):
-        metadatos = TinyTag.get(cola.cancion_actual)
-
-        if metadatos.title:
-            self.titulo.set(metadatos.title)
-        else:
+        if not cola.cancion_actual:
             self.titulo.set("Titulo desconocido")
-
-        if metadatos.artist:
-            self.artista.set(metadatos.artist)
-        else:
             self.artista.set("Artista desconocido")
-
-        if metadatos.album:
-            self.album.set(metadatos.album)
-        else:
             self.album.set("Álbum desconocido")
+            self.actualizar_caratula()
 
-        self.actualizar_caratula()
+        else:
+            metadatos = TinyTag.get(cola.cancion_actual)
+
+            if metadatos.title:
+                self.titulo.set(metadatos.title)
+            else:
+                self.titulo.set("Titulo desconocido")
+
+            if metadatos.artist:
+                self.artista.set(metadatos.artist)
+            else:
+                self.artista.set("Artista desconocido")
+
+            if metadatos.album:
+                self.album.set(metadatos.album)
+            else:
+                self.album.set("Álbum desconocido")
+
+            self.actualizar_caratula()
     
     def actualizar_caratula(self):        
         imagen_caratula = caratula.obtener_imagen_caratula()
@@ -248,6 +257,8 @@ class Reproductor:
     def detener_reproduccion(self):
         mixer.music.stop()
         self.deshabilitar_controles_posicion()
+        cola.cancion_actual = None
+        self.actualizar_metadatos()
 
     def reproducir_cancion(self):
         mixer.music.play()
