@@ -167,6 +167,10 @@ class Reproductor:
         self.boton_crear_playlist["command"] = crear_playlist
         self.boton_crear_playlist.grid(column = 2, row = 2)
 
+        self.boton_borrar_cola = ttk.Button(frame_controles_cola, text = "Borrar cola", width = 26)
+        self.boton_borrar_cola["command"] = self.borrar_cola
+        self.boton_borrar_cola.grid(column = 1, columnspan = 2, row = 3)
+
         # === FRAME DE LOS BOTONES ===
 
         root.mainloop()
@@ -239,6 +243,12 @@ class Reproductor:
             ruta_cancion = "\n" + cola.cancion_actual
             playlist.write(ruta_cancion)
 
+        # === FUNCIONES DE REPRODUCCIÓN ===
+
+    def detener_reproduccion(self):
+        mixer.music.stop()
+        self.deshabilitar_controles_posicion()
+
     def reproducir_cancion(self):
         mixer.music.play()
         self.boton_detener["state"] = "normal"
@@ -281,40 +291,62 @@ class Reproductor:
     def actualizar_cancion_actual(self):
         cola.cancion_actual = cola.cola_reproduccion[cola.posicion_actual]
 
+        # === FUNCIONES DE REPRODUCCION ===
+
         # === ABRIR DESDE ===
  
     def abrir_desde_carpeta(self):
         canciones = abrir_ruta_carpeta()
 
-        self.empezar_nueva_cola(canciones)
+        self.anadir_a_cola(canciones)
 
     def abrir_desde_archivos(self):
         canciones = abrir_rutas_archivos()
 
-        self.empezar_nueva_cola(canciones)
+        self.anadir_a_cola(canciones)
 
     def abrir_desde_playlist(self):
         canciones = leer_playlist()
 
-        self.empezar_nueva_cola(canciones)
+        self.anadir_a_cola(canciones)
 
         # === ABRIR DESDE === 
 
         # === FUNCIONES DE LA COLA ===
 
+    def actualizar_datos_cola(self):
+        cola.cantidad_canciones = len(cola.cola_reproduccion) - 1
+        cola.cancion_actual = cola.cola_reproduccion[cola.posicion_actual]
+        
     def reiniciar_datos_cola(self):
         cola.cantidad_canciones = len(cola.cola_reproduccion) - 1
         cola.posicion_actual = 0
         cola.cancion_actual = cola.cola_reproduccion[cola.posicion_actual]
 
-    def empezar_nueva_cola(self, nuevas_canciones):
-        cola.cola_base = nuevas_canciones
-        cola.cola_reproduccion = nuevas_canciones
+    def anadir_a_cola(self, nuevas_canciones):
+        if cola.cola_reproduccion:
+            cola.cola_base.extend(nuevas_canciones)
+            cola.cola_reproduccion.extend(nuevas_canciones)
 
-        self.reiniciar_datos_cola()
+            self.actualizar_datos_cola()
+            self.comprobar_posicion_cancion()
+        
+        else:
+            cola.cola_base = nuevas_canciones
+            cola.cola_reproduccion = nuevas_canciones
 
-        self.cargar_cancion()
-        self.reproducir_cancion()
+            self.reiniciar_datos_cola()
+
+            self.cargar_cancion()
+            self.reproducir_cancion()
+
+    def borrar_cola(self):
+        cola.cola_base.clear()
+        cola.cola_reproduccion.clear()
+
+        self.detener_reproduccion()
+        
+        self.boton_borrar_cola["state"] = "disabled"
 
         # === FUNCIONES DE LA COLA ===
 
@@ -346,6 +378,14 @@ class Reproductor:
         # === FUNCIONES DEL PLAYBACK ===
 
         # === FUNCIONES DE LOS CONTROLES DE POSICION ===
+    
+    def deshabilitar_controles_posicion(self):
+        self.boton_anadir_playlist["state"] = "disabled"
+        self.boton_playback["state"] = "disabled"
+        self.boton_anterior["state"] = "disabled"
+        self.boton_estado["state"] = "disabled"
+        self.boton_detener["state"] = "disabled"
+        self.boton_siguente["state"] = "disabled"
 
     def anterior_cancion(self):
         cola.posicion_actual -= 1
