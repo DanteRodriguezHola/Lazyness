@@ -285,7 +285,7 @@ class Reproductor:
         self.boton_detener["state"] = "normal"
 
     def check_song_stopped(self):
-        if mixer.music.get_busy or cola.estado == cola.PAUSA:
+        if mixer.music.get_busy or cola.tipo_playback == cola.PAUSA:
             return
         
         if cola.posicion_actual >= cola.cantidad_canciones:
@@ -299,6 +299,12 @@ class Reproductor:
         self.actualizar_metadatos()
 
     def comprobar_posicion_cancion(self):
+        if cola.tipo_repeticion == cola.BUCLE:
+            self.boton_anterior["state"] = "normal"
+            self.boton_siguente["state"] = "normal"
+
+            return
+        
         es_primera_cancion = cola.posicion_actual <= 0
         es_ultima_cancion = cola.posicion_actual >= cola.cantidad_canciones
 
@@ -435,6 +441,8 @@ class Reproductor:
         elif cola.tipo_repeticion == cola.BUCLE:
             self.string_tipo_repeticion.set("→")
             cola.tipo_repeticion = cola.LINEAL
+        
+        self.comprobar_posicion_cancion()
 
         # === FUNCIONES DEL TIPO DE REPETICIÓN  ===
 
@@ -461,36 +469,55 @@ class Reproductor:
         self.boton_borrar_cola["state"] = "disabled"
 
     def anterior_cancion(self):
-        cola.posicion_actual -= 1
+        self.comprobar_posicion_cancion()
+
+        es_primera_cancion = cola.posicion_actual <= 0
+
+        if es_primera_cancion and cola.tipo_repeticion == cola.BUCLE:
+            cola.posicion_actual = cola.cantidad_canciones
+        
+        else:
+            cola.posicion_actual -= 1
+
         self.actualizar_cancion_actual()
         self.cargar_cancion()
 
-        if cola.estado == cola.REPRODUCCION:
+        if cola.tipo_playback == cola.REPRODUCCION:
             self.reproducir_cancion()
 
     def siguente_cancion(self):
-        cola.posicion_actual += 1
+        self.comprobar_posicion_cancion()
+
+        es_ultima_cancion = cola.posicion_actual >= cola.cantidad_canciones
+        
+        if es_ultima_cancion and cola.tipo_repeticion == cola.BUCLE:
+            cola.posicion_actual = 0
+
+        else:
+            cola.posicion_actual += 1
+
+        self.comprobar_posicion_cancion()
         self.actualizar_cancion_actual()
         self.cargar_cancion()
 
-        if cola.estado == cola.REPRODUCCION:
+        if cola.tipo_playback == cola.REPRODUCCION:
             self.reproducir_cancion()
             
     def pausar_cancion(self):
         mixer.music.pause()
-        cola.estado = cola.PAUSA
+        cola.tipo_playback = cola.PAUSA
         self.estado.set("▶")
         
     def reanudar_cancion(self):
         mixer.music.unpause()
-        cola.estado = cola.REPRODUCCION
+        cola.tipo_playback = cola.REPRODUCCION
         self.estado.set("▮▮")
         
     def cambiar_estado(self):
-        if cola.estado == cola.REPRODUCCION:
+        if cola.tipo_playback == cola.REPRODUCCION:
             self.pausar_cancion()
 
-        elif cola.estado == cola.PAUSA:
+        elif cola.tipo_playback == cola.PAUSA:
             self.reanudar_cancion()
 
         self.boton_detener["state"] = "normal"
@@ -501,7 +528,7 @@ class Reproductor:
 
         mixer.music.pause()
         self.estado.set("▶")
-        cola.estado = cola.PAUSA
+        cola.tipo_playback = cola.PAUSA
 
         # === FUNCIONES DE LOS CONTROLES DE POSICION ===
 
