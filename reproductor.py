@@ -279,6 +279,7 @@ class Reproductor:
         self.deshabilitar_controles_posicion()
         cola.cancion_actual = None
         self.actualizar_metadatos()
+        self.reiniciar_datos_cola()
 
     def reproducir_cancion(self):
         mixer.music.play()
@@ -424,11 +425,13 @@ class Reproductor:
     def cambiar_playback(self):
         if cola.tipo_playback == cola.ORDENADO:
             self.aleatorizar_cola()
+
             cola.tipo_playback = cola.ALEATORIO
             self.string_playback.set("⇄")
 
         elif cola.tipo_playback == cola.ALEATORIO:
             self.normalizar_cola()
+
             cola.tipo_playback = cola.ORDENADO
             self.string_playback.set("⇉")
 
@@ -553,3 +556,10 @@ class Reproductor:
     # === DEFINICIONES DE FUNCIONES ===
     
 Reproductor()
+
+# === SOLUCIONAR ===
+
+"""
+Si se elimina una cola y se inicia otra, los controles de reproducción no se vuelven a habilitar
+
+"""
