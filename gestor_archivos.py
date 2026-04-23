@@ -5,6 +5,8 @@ import fleep
 
 import cola
 
+# === FUNCION QUE VERIFICA SI EL ARCHIVO ES DE AUDIO ===
+
 def es_audio(ruta_archivo):
     with open(ruta_archivo, "rb") as archivo:
         tipo_archivo = fleep.get(archivo.read(128))
@@ -13,6 +15,8 @@ def es_audio(ruta_archivo):
         
         else:
             return False
+
+# === FUNCION QUE VERIFICA SI EL ARCHIVO ES DE AUDIO ===
 
 # === CARPETAS ===
 
@@ -37,7 +41,7 @@ def preguntar_examinar_subcarpetas():
     # === CONFIGURACIONES DE LA VENTANA ===
 
     titulo_ventana = "¿Examinar subcarpetas?"
-    mensaje_ventana = "Se encontro subcarpetas durante la examinación.\n¿Desea examinarlas también?"
+    mensaje_ventana = "Se encontro subcarpetas dentro de la carpeta abierta.\n¿Desea examinarlas también?"
 
     # === CONFIGURACIONES DE LA VENTANA ===
     

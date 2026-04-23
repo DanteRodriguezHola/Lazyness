@@ -7,7 +7,7 @@ from pygame import mixer
 from random import shuffle
 from tinytag import TinyTag
 
-from archivos import abrir_ruta_carpeta, abrir_rutas_archivos, abrir_ruta_playlist, leer_playlist, crear_playlist
+import gestor_archivos
 import caratula
 import cola
 
@@ -23,7 +23,7 @@ class Reproductor:
         mainframe.grid(column = 1, row = 1)
 
         mixer.init()
-        
+
         # === DEFINICION DE LOS ESTILOS ===
 
         tema = "clam"
@@ -166,7 +166,7 @@ class Reproductor:
         self.boton_abrir_playlist.grid(column = 1, row = 2)
 
         self.boton_crear_playlist = ttk.Button(frame_controles_cola, text = "Crear playlist", width = 13)
-        self.boton_crear_playlist["command"] = crear_playlist
+        self.boton_crear_playlist["command"] = gestor_archivos.crear_playlist
         self.boton_crear_playlist.grid(column = 2, row = 2)
 
         self.boton_borrar_cola = ttk.Button(frame_controles_cola, text = "Borrar cola", width = 26)
@@ -257,7 +257,7 @@ class Reproductor:
         # === FUNCIONES DE LOS METADATOS Y LAS CARATULAS ===
 
     def anadir_cancion_playlist(self):
-        ruta_playlist = abrir_ruta_playlist()
+        ruta_playlist = gestor_archivos.abrir_ruta_playlist()
         
         with open(ruta_playlist, "a") as playlist:
             ruta_cancion = "\n" + cola.cancion_actual
@@ -322,17 +322,17 @@ class Reproductor:
         # === ABRIR DESDE ===
  
     def abrir_desde_carpeta(self):
-        canciones = abrir_ruta_carpeta()
+        canciones = gestor_archivos.abrir_ruta_carpeta()
 
         self.anadir_a_cola(canciones)
 
     def abrir_desde_archivos(self):
-        canciones = abrir_rutas_archivos()
+        canciones = gestor_archivos.abrir_rutas_archivos()
 
         self.anadir_a_cola(canciones)
 
     def abrir_desde_playlist(self):
-        canciones = leer_playlist()
+        canciones = gestor_archivos.leer_playlist()
 
         self.anadir_a_cola(canciones)
 
