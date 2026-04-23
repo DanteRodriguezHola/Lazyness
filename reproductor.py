@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, messagebox
 
 from os import system
 from PIL import ImageTk
@@ -22,7 +22,8 @@ class Reproductor:
         mainframe["padding"] = 10
         mainframe.grid(column = 1, row = 1)
 
-        mixer
+        mixer.init()
+        
         # === DEFINICION DE LOS ESTILOS ===
 
         tema = "clam"

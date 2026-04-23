@@ -33,15 +33,35 @@ def examinar_elementos(carpeta):
 
     return canciones_encontradas, subcarpetas_encontradas
 
+def preguntar_examinar_subcarpetas():
+    # === CONFIGURACIONES DE LA VENTANA ===
+
+    titulo_ventana = "¿Examinar subcarpetas?"
+    mensaje_ventana = "Se encontro subcarpetas durante la examinación.\n¿Desea examinarlas también?"
+
+    # === CONFIGURACIONES DE LA VENTANA ===
+    
+    respuesta = messagebox.askyesno(title = titulo_ventana, message = mensaje_ventana)
+    
+    return respuesta
+
 def examinar_carpetas(carpeta_padre):
     carpetas_restantes = [carpeta_padre]
     canciones_total = []
+    accion = False
+
+    ESCANEAR_SUBCARPETAS = True
 
     while carpetas_restantes:
         carpeta_actual = carpetas_restantes[0]
         canciones, subcarpetas = examinar_elementos(carpeta_actual)
 
-        carpetas_restantes.extend(subcarpetas)
+        if carpeta_padre in carpetas_restantes and subcarpetas:
+            accion = preguntar_examinar_subcarpetas()
+
+        if accion == ESCANEAR_SUBCARPETAS:
+            carpetas_restantes.extend(subcarpetas)
+
         canciones_total.extend(canciones)
         
         carpetas_restantes.remove(carpeta_actual)

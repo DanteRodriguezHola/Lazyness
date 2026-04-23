@@ -1,13 +1,8 @@
-from pygame import mixer
-
-mixer.init()
-
 REPRODUCCION = False
 PAUSA = True
 
 NORMAL = False
 ALEATORIO = True
-
 
 cola_base = []
 cola_reproduccion = []
