@@ -178,9 +178,21 @@ class Reproductor:
     def actualizar_metadatos(self):
         metadatos = TinyTag.get(cola.cancion_actual)
 
-        self.titulo.set(metadatos.title)
-        self.artista.set(metadatos.artist)
-        self.album.set(metadatos.album)
+        if metadatos.title:
+            self.titulo.set(metadatos.title)
+        else:
+            self.titulo.set("Titulo desconocido")
+
+        if metadatos.artist:
+            self.artista.set(metadatos.artist)
+        else:
+            self.artista.set("Artista desconocido")
+
+        if metadatos.album:
+            self.album.set(metadatos.album)
+        else:
+            self.album.set("Álbum desconocido")
+
         self.actualizar_caratula()
     
     def actualizar_caratula(self):        
@@ -245,7 +257,7 @@ class Reproductor:
         self.check_song_position()
         self.actualizar_metadatos()
 
-    def check_song_position(self):
+    def comprobar_posicion_cancion(self):
         if cola.posicion_actual <= 0:
             self.boton_anterior["state"] = "disable"
         else:
