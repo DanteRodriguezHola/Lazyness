@@ -256,6 +256,10 @@ class Reproductor:
 
     def detener_reproduccion(self):
         mixer.music.stop()
+
+        self.string_playback.set("⇉")
+        cola.playback = cola.NORMAL
+        
         self.deshabilitar_controles_posicion()
         cola.cancion_actual = None
         self.actualizar_metadatos()
