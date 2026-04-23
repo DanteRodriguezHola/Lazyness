@@ -1,5 +1,6 @@
 from tkinter import filedialog, messagebox
 from os import path, listdir
+from pathlib import Path
 import fleep
 
 import cola
@@ -72,7 +73,8 @@ def abrir_rutas_archivos():
 
     return canciones
 
-# === ARCHIVO ===
+# === ARCHIVOS ===
+
 # === PLAYLISTS ===
 
 def examinar_playlist(ruta_playlist):
@@ -95,9 +97,11 @@ def examinar_playlist(ruta_playlist):
     return canciones
 
 def abrir_ruta_playlist():
-    formatos = "*.m3u *.m3u8"
-
-    ruta_playlist = filedialog.askopenfilename(title = "Seleccione una playlist", filetypes = [("Playlists", formatos)])
+    titulo_ventana = "Seleccione una playlist"
+    carpeta_default = "/playlists"
+    formatos_playlist = [("Playlist", "*.m3u .m3u8")]
+    ruta_playlist = filedialog.askopenfilename(title = titulo_ventana, initialdir = carpeta_default, filetypes = formatos_playlist)
+    
     return ruta_playlist
 
 def leer_playlist():
@@ -106,4 +110,24 @@ def leer_playlist():
 
     return canciones
 
+def crear_playlist():
+    # === DETALLES DE LA VENTANA ===
+
+    titulo_ventana = "Crear playlist"
+    formato_default = ".m3u8"
+    nombre_default = "Mi nueva playlist"
+    carpeta_default = "/playlists"
+    formatos_playlist = [("MPEG 3.0 URL codificado en UTF-8", "*.m3u8"), ("MPEG 3.0 URL", "*.m3u")]
+
+    # === DETALLES DE LA VENTANA ===
+
+    ruta_nueva_playlist = filedialog.asksaveasfilename(title = titulo_ventana, defaultextension = formato_default, initialfile = nombre_default, initialdir = carpeta_default, filetypes = formatos_playlist)
+
+    if ruta_nueva_playlist:
+        titulo_playlist = Path(ruta_nueva_playlist).stem
+
+        with open(ruta_nueva_playlist, "w") as playlist:
+            playlist.write(f"#EXTINF {titulo_playlist}")
+
+abrir_ruta_playlist()
 # === PLAYLISTS ===

@@ -5,7 +5,7 @@ from PIL import ImageTk, Image
 from random import shuffle
 from os import system
 
-from abrir_archivos import abrir_ruta_carpeta, abrir_rutas_archivos, abrir_ruta_playlist, leer_playlist
+from archivos import abrir_ruta_carpeta, abrir_rutas_archivos, abrir_ruta_playlist, leer_playlist, crear_playlist
 from cola import mixer
 
 import caratula
@@ -159,6 +159,7 @@ class Reproductor:
         self.boton_abrir_playlist.grid(column = 1, row = 2)
 
         self.boton_crear_playlist = ttk.Button(frame_controles_cola, text = "Crear playlist", width = 13)
+        self.boton_crear_playlist["command"] = crear_playlist
         self.boton_crear_playlist.grid(column = 2, row = 2)
 
         # === FRAME DE LOS BOTONES ===
