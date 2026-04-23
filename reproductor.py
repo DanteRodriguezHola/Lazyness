@@ -314,6 +314,21 @@ class Reproductor:
 
         # === FUNCIONES DE LA COLA ===
 
+    def mostrar_nuevas_canciones(self, canciones):
+        for cancion in canciones:
+            print(cancion)
+
+    def mostrar_cola(self):
+        system("cls")
+
+        print("Cola base:")
+        for cancion in cola.cola_base:
+            print(cancion)
+
+        print("Cola reproduccion:")
+        for cancion in cola.cola_reproduccion:
+            print(cancion)
+
     def actualizar_datos_cola(self):
         cola.cantidad_canciones = len(cola.cola_reproduccion) - 1
         cola.cancion_actual = cola.cola_reproduccion[cola.posicion_actual]
@@ -324,6 +339,8 @@ class Reproductor:
         cola.cancion_actual = cola.cola_reproduccion[cola.posicion_actual]
 
     def anadir_a_cola(self, nuevas_canciones):
+        self.mostrar_nuevas_canciones(nuevas_canciones)
+
         if cola.cola_reproduccion:
             cola.cola_base.extend(nuevas_canciones)
             cola.cola_reproduccion.extend(nuevas_canciones)
@@ -332,21 +349,20 @@ class Reproductor:
             self.comprobar_posicion_cancion()
         
         else:
-            cola.cola_base = nuevas_canciones
-            cola.cola_reproduccion = nuevas_canciones
+            cola.cola_base.extend(nuevas_canciones)
+            cola.cola_reproduccion.extend(nuevas_canciones)
 
             self.reiniciar_datos_cola()
 
             self.cargar_cancion()
             self.reproducir_cancion()
+            self.habilitar_controles_posicion()
 
     def borrar_cola(self):
         cola.cola_base.clear()
         cola.cola_reproduccion.clear()
 
         self.detener_reproduccion()
-        
-        self.boton_borrar_cola["state"] = "disabled"
 
         # === FUNCIONES DE LA COLA ===
 
@@ -378,7 +394,17 @@ class Reproductor:
         # === FUNCIONES DEL PLAYBACK ===
 
         # === FUNCIONES DE LOS CONTROLES DE POSICION ===
-    
+
+    def habilitar_controles_posicion(self):
+        self.boton_anadir_playlist["state"] = "normal"
+        self.boton_playback["state"] = "normal"
+        self.boton_anterior["state"] = "normal"
+        self.boton_estado["state"] = "normal"
+        self.boton_detener["state"] = "normal"
+        self.boton_siguente["state"] = "normal"
+
+        self.boton_borrar_cola["state"] = "normal"
+
     def deshabilitar_controles_posicion(self):
         self.boton_anadir_playlist["state"] = "disabled"
         self.boton_playback["state"] = "disabled"
@@ -386,6 +412,8 @@ class Reproductor:
         self.boton_estado["state"] = "disabled"
         self.boton_detener["state"] = "disabled"
         self.boton_siguente["state"] = "disabled"
+
+        self.boton_borrar_cola["state"] = "disabled"
 
     def anterior_cancion(self):
         cola.posicion_actual -= 1
